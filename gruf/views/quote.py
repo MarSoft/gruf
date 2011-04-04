@@ -5,7 +5,7 @@ from gruf.database import Quote
 
 quote = Module(__name__)
 
-@quote.route('/<qid>/')
+@quote.route('/<int:qid>/')
 def index(qid=None):
     try:
         quote = Quote.query.filter_by(id=qid).one()
@@ -13,10 +13,10 @@ def index(qid=None):
         abort(404)
     return render_template('quote.html', quote=quote)
 
-@quote.route('/<qid>/rss.xml')
+@quote.route('/<int:qid>/rss.xml')
 def rss(qid=None):
     pass
 
-@quote.route('/<qid>/edit/')
+@quote.route('/<int:qid>/edit/')
 def edit(qid=None):
     pass
