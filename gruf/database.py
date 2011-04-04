@@ -28,12 +28,12 @@ class Quote(db.Model):
     author = db.Column(db.String(64))
     source = db.Column(db.String(64))
     prooflink = db.Column(db.String(MAX_URI))
-    sender_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    sender_id = db.Column(db.String(64), db.ForeignKey('users.nick'))
     sender = db.relationship('User', backref=db.backref('sent', lazy='dynamic'),
-        primaryjoin = 'Quote.sender_id == User.id')
-    approver_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+        primaryjoin = 'Quote.sender_id == User.nick')
+    approver_id = db.Column(db.String(64), db.ForeignKey('users.nick'))
     approver = db.relationship('User', backref=db.backref('approved', lazy='dynamic'),
-        primaryjoin = 'Quote.approver_id == User.id')
+        primaryjoin = 'Quote.approver_id == User.nick')
     senddate = db.Column(db.DateTime)
     approvedate = db.Column(db.DateTime)
     offensive = db.Column(db.SmallInteger) # 0=Unknown, 1=Offensive, 2=Good
@@ -59,8 +59,7 @@ class Quote(db.Model):
 
 class User(db.Model):
     __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key = True)
-    nick = db.Column(db.String(64), unique = True)
+    nick = db.Column(db.String(64), primary_key = True)
     openid = db.Column(db.String(MAX_URI)) # None, если не зарегистрирован
     registered = db.Column(db.DateTime)
     rights = db.Column(db.SmallInteger) # 0=normal, 1=approver, 2=releaser, 99=banned
@@ -83,7 +82,7 @@ class User(db.Model):
         self.emailConfirmed = emailConfirmed
 
     def __repr__(self):
-        return '<User #%s, %s (openid %s, rights %i, c_rights %i)' % (self.id, self.nick, self.openid, self.rights, self.canComment)
+        return '<User %s (openid %s, rights %i, c_rights %i)' % (self.nick, self.openid, self.rights, self.canComment)
 
 class Comment(db.Model):
     __tablename__ = 'comments'
@@ -91,7 +90,7 @@ class Comment(db.Model):
     quote_id = db.Column(db.Integer, db.ForeignKey('quotes.id'))
     quote = db.relationship('Quote', backref=db.backref('comments', lazy='dynamic'))
     text = db.Column(db.Text)
-    sender_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    sender_id = db.Column(db.String(64), db.ForeignKey('users.nick'))
     sender = db.relationship('User', backref=db.backref('comments', lazy='dynamic'))
     date = db.Column(db.DateTime)
 
@@ -107,7 +106,7 @@ class Comment(db.Model):
 class Subscription(db.Model):
     __tablename__ = 'subscriptions'
     id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_id = db.Column(db.String(64), db.ForeignKey('users.nick'))
     user = db.relationship('User', backref=db.backref('subscriptions', lazy='dynamic'))
     quote_id = db.Column(db.Integer, db.ForeignKey('quotes.id'))
     quote = db.relationship('Quote', backref=db.backref('subscriptions', lazy='dynamic'))
