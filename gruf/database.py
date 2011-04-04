@@ -45,14 +45,14 @@ class Quote(db.Model):
         self.source = source
         self.prooflink = prooflink
         self.sender = sender
-        self.approver_id = approver
+        self.approver = approver
         self.senddate = senddate
         self.approvedate = approvedate
         self.offensive = offensive
         self.rejected = False
 
     def __repr__(self):
-        return '<Quote #%s (state %i, sent by %s, approved by %s)>' % (self.id, self.state, self.sender, self.approver_id)
+        return '<Quote #%s (rej: %s, sent by %s, approved by %s)>' % (self.id, self.rejected, self.sender_id, self.approver_id)
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -98,7 +98,7 @@ class Comment(db.Model):
         self.date = date
 
     def __repr__(self):
-        return '<Comment %i for %s (by %s)>' % (self.id, self.quote, self.sender)
+        return '<Comment %i for %s (by %s)>' % (self.id, self.quote, self.sender_id)
 
 class Subscription(db.Model):
     __tablename__ = 'subscriptions'
