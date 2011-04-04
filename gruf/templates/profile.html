@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ user.nick }}{% endblock %}
+
+{% block head %}
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='profile.css') }}" />
+{% endblock %}
+
+{% block content %}
+  <h1>Пользователь <a href="{{ url_for('profile', nick=user.nick) }}">{{ user.nick }}</a></h1>
+  <p>Прислал цитат: <a href="{{ url_for('qlist.sent_by', nick=user.nick) }}">{{ user.sent.count() }}</a>,
+  	из них отклонено {{ rejected.count() }}</p>
+  {% if user.is_approver() %}
+    <p>Принял (зааппрувил) цитат: <a href="{{ url_for('qlist.approved_by',
+	  nick=user.nick) }}">{{ user.approved.count() }}</a></p>
+  {% endif %}
+{% endblock %}
+
+{# vim: set syntax=htmljinja: #}
