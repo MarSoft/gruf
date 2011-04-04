@@ -30,10 +30,10 @@ class Quote(db.Model):
     source = db.Column(db.String(64))
     prooflink = db.Column(db.String(MAX_URI))
     sender_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    sender = db.relationship('User', backref=db.backref('quotes', lazy='dynamic'),
+    sender = db.relationship('User', backref=db.backref('sent', lazy='dynamic'),
         primaryjoin = 'Quote.sender_id == User.id')
     approver_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    approver = db.relationship('User', backref=db.backref('quotes2', lazy='dynamic'),
+    approver = db.relationship('User', backref=db.backref('approved', lazy='dynamic'),
         primaryjoin = 'Quote.approver_id == User.id')
     senddate = db.Column(db.DateTime)
     approvedate = db.Column(db.DateTime)
@@ -56,7 +56,7 @@ class Quote(db.Model):
         self.state = state
 
     def __repr__(self):
-        return '<Quote %s (state %i, sent by %s, approved by %s)>' % (self.id, self.state, self.sender, self.approver_id)
+        return '<Quote #%s (state %i, sent by %s, approved by %s)>' % (self.id, self.state, self.sender, self.approver_id)
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -75,19 +75,16 @@ class User(db.Model):
     CMT_BANNED = 99
     emailConfirmed = db.Column(db.Boolean)
 
-    sent = db.relationship('Quote', backref=db.backref('users', lazy='dynamic'),
-            primaryjoin = 'User.id == Quote.sender_id')
-    approved = db.relationship('Quote', backref=db.backref('users2', lazy='dynamic'),
-            primaryjoin = 'User.id == Quote.approver_id')
-
-    def __init__(self, openid, rights = RIGHTS_NORMAL, canComment = CMT_NORMAL, emailConfirmed = False):
+    def __init__(self, nick, openid, rights = RIGHTS_NORMAL, canComment = CMT_NORMAL, registered = datetime.now(), emailConfirmed = False):
+        self.nick = nick
         self.openid = openid
+        self.registered = registered
         self.rights = rights
         self.canComment = canComment
         self.emailConfirmed = emailConfirmed
 
     def __repr__(self):
-        return '<User #%i, %s (rights %i, c_rights %i)' % (self.id, self.openid, self.rights, self.canComment)
+        return '<User #%i, %s (openid %s, rights %i, c_rights %i)' % (self.id, self.nick, self.openid, self.rights, self.canComment)
 
 class Comment(db.Model):
     __tablename__ = 'comments'
@@ -100,13 +97,13 @@ class Comment(db.Model):
     date = db.Column(db.DateTime)
 
     def __init__(self, quote, text, sender, date = datetime.now()):
-        self.quote_id = quote
+        self.quote = quote
         self.text = text
         self.sender_id = sender
         self.date = date
 
     def __repr__(self):
-        return '<Comment %i for %i (by %s)>' % (self.id, self.quoteid, self.sender)
+        return '<Comment %i for %s (by %s)>' % (self.id, self.quote, self.sender)
 
 class Subscription(db.Model):
     __tablename__ = 'subscriptions'
@@ -117,8 +114,8 @@ class Subscription(db.Model):
     quote = db.relationship('Quote', backref=db.backref('subscriptions', lazy='dynamic'))
 
     def __init__(self, user, quote):
-        self.user_id = user
-        self.quote_id = quote
+        self.user = user
+        self.quote = quote
 
     def __repr__(self):
         return '<Subscription of %s to quote %i>' % (self.openid, self.quote)
