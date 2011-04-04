@@ -20,7 +20,10 @@ db = SQLAlchemy(app)
 class Quote(db.Model):
     __tablename__ = 'quotes'
     id = db.Column(db.Integer, primary_key = True)
-    rejected = db.Column(db.Boolean)
+    state = db.Column(db.SmallInteger) # 0=Abyss, 1=Approved, 2=Rejected
+    STATE_ABYSS = 0
+    STATE_APPROVED = 1
+    STATE_REJECTED = 2
     text = db.Column(db.Text)
     author = db.Column(db.String(64))
     source = db.Column(db.String(64))
@@ -28,7 +31,7 @@ class Quote(db.Model):
     sender_id = db.Column(db.String(64), db.ForeignKey('users.nick'))
     sender = db.relationship('User', backref=db.backref('sent', lazy='dynamic'),
         primaryjoin = 'Quote.sender_id == User.nick')
-    approver_id = db.Column(db.String(64), db.ForeignKey('users.nick')) # если None, значит в бездне
+    approver_id = db.Column(db.String(64), db.ForeignKey('users.nick'))
     approver = db.relationship('User', backref=db.backref('approved', lazy='dynamic'),
         primaryjoin = 'Quote.approver_id == User.nick')
     senddate = db.Column(db.DateTime)
@@ -38,8 +41,8 @@ class Quote(db.Model):
     OFF_OFFENSIVE = 1
     OFF_GOOD = 2
 
-    def __init__(self, text, author, source, prooflink, sender, offensive = OFF_UNKNOWN,
-            approver = None, approvedate = None, senddate = datetime.now()):
+    def __init__(self, text, author, source, prooflink, sender,
+            senddate = datetime.now(), approver = None, approvedate = None, offensive = OFF_UNKNOWN, state = STATE_ABYSS):
         self.text = text
         self.author = author
         self.source = source
@@ -49,7 +52,7 @@ class Quote(db.Model):
         self.senddate = senddate
         self.approvedate = approvedate
         self.offensive = offensive
-        self.rejected = False
+        self.state = state
 
     def __repr__(self):
         return '<Quote #%s (rej: %s, sent by %s, approved by %s)>' % (self.id, self.rejected, self.sender_id, self.approver_id)
