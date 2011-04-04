@@ -89,24 +89,6 @@ class User(db.Model):
     def __repr__(self):
         return '<User #%i, %s (rights %i, c_rights %i)' % (self.id, self.openid, self.rights, self.canComment)
 
-class Release(db.Model):
-    __tablename__ = 'releases'
-    version = db.Column(db.Integer, primary_key = True)
-    count = db.Column(db.Integer)
-    birthDate = db.Column(db.DateTime)
-    inTree = db.Column(db.Boolean)
-    isHidden = db.Column(db.Boolean)
-
-    def __init__(self, version, count, birthDate = datetime.now(), inTree = False, isHidden = False):
-        self.version = version
-        self.count = count
-        self.birthDate = birthDate
-        self.inTree = inTree
-        self.isHidden = isHidden
-
-    def __repr__(self):
-        return '<Release v%i (%i quotes)>' % (self.version, self.count)
-
 class Comment(db.Model):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key = True)
@@ -140,3 +122,21 @@ class Subscription(db.Model):
 
     def __repr__(self):
         return '<Subscription of %s to quote %i>' % (self.openid, self.quote)
+
+class Release(db.Model):
+    __tablename__ = 'releases'
+    version = db.Column(db.Integer, primary_key = True)
+    count = db.Column(db.Integer)
+    birthDate = db.Column(db.DateTime)
+    inTree = db.Column(db.Boolean)
+    isHidden = db.Column(db.Boolean)
+
+    def __init__(self, version, count, birthDate = datetime.now(), inTree = False, isHidden = False):
+        self.version = version
+        self.count = count
+        self.birthDate = birthDate
+        self.inTree = inTree
+        self.isHidden = isHidden
+
+    def __repr__(self):
+        return '<Release v%i (%i quotes)>' % (self.version, self.count)
