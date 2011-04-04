@@ -10,7 +10,7 @@
 <h1>Цитата <a href='{{ url_for('index', qid=quote.id) }}'>#{{ quote.id }}</a></h1>
 <pre>{{ quote.text }}
 		-- {{ quote.author }} ({{ quote.source }})</pre>
-<p>Цитату прислал <a href="{{ url_for('users.info', nick=quote.sender.nick) }}">{{ quote.sender.nick }}</a></p>
+<p>Цитату прислал <a href="{{ url_for('users.profile', nick=quote.sender.nick) }}">{{ quote.sender.nick }}</a></p>
 {% endblock %}
 
 {# vim: set syntax=htmljinja: #}

@@ -8,5 +8,5 @@ def index():
     return 'Hello World!'
 
 @users.route('/<nick>/')
-def info(nick):
+def profile(nick):
     return 'Userinfo for ' + nick;
