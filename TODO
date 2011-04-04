@@ -121,7 +121,7 @@ URLs
 /list - список в html всех одобренных не-offensive
 /list/offensive - только offensive
 /list/all - включая offensive
-/list/posted-by/UID - цитаты пользователя
+/list/sent-by/UID - цитаты пользователя
 /list/approved-by/UID - цитаты аппрувера
 /list/...?page=N - страница N (может выдавать bare html)
 /list/...?page=all - все цитаты одним списком

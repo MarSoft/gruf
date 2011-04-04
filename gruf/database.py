@@ -81,6 +81,9 @@ class User(db.Model):
     def __repr__(self):
         return '<User %s (openid %s, rights %i, c_rights %i)' % (self.nick, self.openid, self.rights, self.canComment)
 
+    def is_approver(self):
+        return self.rights in (self.RIGHTS_APPROVER, self.RIGHTS_RELEASER)
+
 class Comment(db.Model):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key = True)
