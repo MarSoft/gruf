@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from flaskext.sqlalchemy import SQLAlchemy
 from gruf import app
 from datetime import datetime
@@ -61,21 +60,21 @@ class Quote(db.Model):
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key = True)
-    nick = db.Column(db.String(64))
-    openid = db.Column(db.String(MAX_URI))
+    nick = db.Column(db.String(64), unique = True)
+    openid = db.Column(db.String(MAX_URI)) # None, если не зарегистрирован
     registered = db.Column(db.DateTime)
     rights = db.Column(db.SmallInteger) # 0=normal, 1=approver, 2=releaser, 99=banned
     RIGHTS_NORMAL = 0
     RIGHTS_APPROVER = 1
     RIGHTS_RELEASER = 2
-    RIGHTS_BANNED = 99
+    RIGHTS_BANNED = -1
     canComment = db.Column(db.SmallInteger) # 0=normal, 1=moderator, 99=banned
     CMT_NORMAL = 0
     CMT_MODERATOR = 1
-    CMT_BANNED = 99
+    CMT_BANNED = -1
     emailConfirmed = db.Column(db.Boolean)
 
-    def __init__(self, nick, openid, rights = RIGHTS_NORMAL, canComment = CMT_NORMAL, registered = datetime.now(), emailConfirmed = False):
+    def __init__(self, nick, openid = None, rights = RIGHTS_NORMAL, canComment = CMT_NORMAL, registered = datetime.now(), emailConfirmed = False):
         self.nick = nick
         self.openid = openid
         self.registered = registered
@@ -84,7 +83,7 @@ class User(db.Model):
         self.emailConfirmed = emailConfirmed
 
     def __repr__(self):
-        return '<User #%i, %s (openid %s, rights %i, c_rights %i)' % (self.id, self.nick, self.openid, self.rights, self.canComment)
+        return '<User #%s, %s (openid %s, rights %i, c_rights %i)' % (self.id, self.nick, self.openid, self.rights, self.canComment)
 
 class Comment(db.Model):
     __tablename__ = 'comments'
