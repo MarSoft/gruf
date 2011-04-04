@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block title %}Цитата #{{ quote.id }}{% endblock %}
+
+{% block head %}
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='quote.css') }}" />
+{% endblock %}
+
+{% block content %}
+<h1>Цитата <a href='{{ url_for('index', qid=quote.id) }}'>#{{ quote.id }}</a></h1>
+<pre>{{ quote.text }}
+		-- {{ quote.author }} ({{ quote.source }})</pre>
+<p>Цитату прислал <a href="{{ url_for('users.info', nick=quote.sender_id) }}">{{ quote.sender }}</a></p>
+{% endblock %}
+
+{# vim: set syntax=htmljinja: #}
