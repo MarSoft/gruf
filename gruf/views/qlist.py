@@ -12,7 +12,7 @@ def display(quotes, title, mod=None):
     title: заголовок страницы (т.е. описание того, что это за набор цитат)
     mod: модификатор (rss.xml, subscribe...), отвечающий за способ вывода или действие
     """
-    return render_template('qlist.html', **locals())
+    return render_template('list.html', **locals())
 
 @qlist.route('/')
 @qlist.route('/<path:mod>')
