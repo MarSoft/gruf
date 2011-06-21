@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}{{ user.nick }}{% endblock %}
+{% block title %}Профиль пользователя {{ user.nick }}{% endblock %}
 
 {% block head %}
 <link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='profile.css') }}" />
