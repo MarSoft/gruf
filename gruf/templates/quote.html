@@ -7,10 +7,9 @@
 {% endblock %}
 
 {% block content %}
-<h1>Цитата <a href='{{ url_for('index', qid=quote.id) }}'>#{{ quote.id }}</a></h1>
-<pre>{{ quote.text }}
-		-- {{ quote.author }} ({{ quote.source }})</pre>
-<p>Цитату прислал <a href="{{ url_for('users.profile', nick=quote.sender.nick) }}">{{ quote.sender.nick }}</a></p>
+{% include "quote.part.html" %}
+<h3><a name='comments'></a>Комментарии</h3>
+<i>TODO</i>
 {% endblock %}
 
 {# vim: set syntax=htmljinja: #}

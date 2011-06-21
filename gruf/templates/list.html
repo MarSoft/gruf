@@ -8,7 +8,12 @@
 
 {% block content %}
 <h1>{{ title }}</h1>
-
+<div id='quotes'>
+{% for quote in quotes %}
+{% include "quote.part.html" %}
+{% if not loop.last %}<hr/>{% endif %}
+{% endfor %}
+</div>
 {% endblock %}
 
 {# vim: set syntax=htmljinja: #}
