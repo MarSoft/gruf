@@ -19,7 +19,7 @@ def display(quotes, title, mod=None):
 def index(mod=None):
     return display(Quote.query.filter_by(
         offensive=Quote.OFF_GOOD, state=Quote.STATE_APPROVED).all(),
-        u'Quote list',
+        u'Все цитаты',
         mod)
 
 @qlist.route('/sent-by/<nick>')
