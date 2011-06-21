@@ -12,8 +12,8 @@
 		<a href="{{ url_for('users.index') }}">Пользователи</a>
 		<a href="{{ url_for('releases.index') }}">Релизы</a>
 		|
-		{% if False %}{# if текущий_пользователй #}
-		В системе как <a href="{{ url_for('users.profile', nick=current_user.nick) }}">{{ current_user.nick }}</a>
+		{% if g.user %}
+		В системе как <a href="{{ url_for('users.profile', nick=g.user.nick) }}">{{ g.user.nick }}</a>
 		<a href="{{ url_for('login.logout') }}">Выход</a>
 		{% else %}
 		<a href="{{ url_for('login.index') }}">Вход</a>
