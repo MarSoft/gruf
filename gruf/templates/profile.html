@@ -8,12 +8,46 @@
 
 {% block content %}
   <h1>Пользователь <a href="{{ url_for('profile', nick=user.nick) }}">{{ user.nick }}</a></h1>
-  <p>Прислал цитат: <a href="{{ url_for('qlist.sent_by', nick=user.nick) }}">{{ user.sent.count() }}</a>,
-  	из них отклонено {{ rejected.count() }}</p>
-  {% if user.is_approver() %}
-    <p>Принял (зааппрувил) цитат: <a href="{{ url_for('qlist.approved_by',
-	  nick=user.nick) }}">{{ user.approved.count() }}</a></p>
-  {% endif %}
+  <table>
+	  <tr>
+		  <td>Имя:</td>
+		  <td>{{ user.nick }}</td>
+	  </tr>
+	  <tr>
+		  <td>Дата регистрации:</td>
+		  <td>{{ user.registered }}</td>
+	  </tr>
+	  <tr>
+		  <td>Права:</td>
+		  <td>{{ {0:'простой смертный', 1:'аппрувер', 2:'релизер', -1:'баня'}[user.rights] }}</td>
+	  </tr>
+	  <tr>
+		  <td>Права комментирования:</td>
+		  <td>{{ {0:'простой смертный', 1:'модератор', -1:'баня'}[user.canComment] }}</td>
+	  </tr>
+	  {% if user.sent.count() %}
+	  <tr>
+		  <td><a href="{{ url_for('qlist.sent_by', nick=user.nick) }}">Прислал цитат:</a></td>
+		  <td>{{ user.sent.count() }}</td>
+	  </tr>
+	  {% else %}
+	  <tr>
+		  <td>Прислал цитат:</td><td>0</td>
+	  </tr>
+	  {% endif %}
+	  {% if user.is_approver() %}{# может, для всех? #}
+	  {% if user.approved.count() %}
+	  <tr>
+		  <td><a href="{{ url_for('qlist.approved_by', nick=user.nick) }}">Одобрил цитат:</a></td>
+		  <td><a href="{{ url_for('qlist.approved_by', nick=user.nick) }}">{{ user.approved.count() }}</a></td>
+	  </tr>
+	  {% else %}
+	  <tr>
+		  <td>Одобрил цитат:</td><td>0</td>
+	  </tr>
+	  {% endif %}
+	  {% endif %}
+  </table>
 {% endblock %}
 
 {# vim: set syntax=htmljinja: #}
