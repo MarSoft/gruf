@@ -7,8 +7,10 @@ users = Module(__name__)
 
 @users.route('/')
 def index():
-    return 'Hello World!'
+    users = User.query.order_by('nick').all()
+    return render_template('userlist.html', **locals())
 
+@users.route('/<nick>')
 @users.route('/<nick>/')
 def profile(nick):
     try:
@@ -20,3 +22,7 @@ def profile(nick):
     accepted = user.sent.filter_by(state=Quote.STATE_APPROVED)
     rejected = user.sent.filter_by(state=Quote.STATE_REJECTED)
     return render_template('profile.html', **locals())
+
+@users.route('/<nick>/edit')
+def edit(nick):
+    pass

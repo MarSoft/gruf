@@ -8,38 +8,47 @@
 
 {% block content %}
   <h1>Пользователь <a href="{{ url_for('profile', nick=user.nick) }}">{{ user.nick }}</a></h1>
+  {% if False %}{# TODO: если текущий_пользователь.is #}
+  <a href="{{ url_for('edit', nick=user.nick) }}">Редактировать</a>
+  {% endif %}
   <table>
 	  <tr>
 		  <td>Имя:</td>
-		  <td>{{ user.nick }}</td>
+		  <td>{{ user.nick }}
+		  {% if user.openid and user.openid.find('gentoo.ru/users/') >= 0 %}{# openid с gentoo.ru #}
+		  (<a href="{{ user.openid.replace('/identity','') }}">на Gentoo.Ru</a>)
+		  {% endif %}
+		  </td>
 	  </tr>
 	  <tr>
-		  <td>Дата регистрации:</td>
-		  <td>{{ user.registered }}</td>
+		  <td>Зарегистрирован:</td>
+		  <td>{{ user.registered.strftime('%d.%m.%Y %H:%M') }}</td>
 	  </tr>
 	  <tr>
 		  <td>Права:</td>
-		  <td>{{ {0:'простой смертный', 1:'аппрувер', 2:'релизер', -1:'баня'}[user.rights] }}</td>
+		  <td>{{ {0:'присылающий', 1:'аппрувер', 2:'релизер', 3:'админ', -1:'баня'}[user.rights] }}</td>
 	  </tr>
 	  <tr>
 		  <td>Права комментирования:</td>
-		  <td>{{ {0:'простой смертный', 1:'модератор', -1:'баня'}[user.canComment] }}</td>
+		  <td>{{ {0:'комментатор', 1:'модератор', -1:'баня'}[user.canComment] }}</td>
 	  </tr>
-	  {% if user.sent.count() %}
 	  <tr>
-		  <td><a href="{{ url_for('qlist.sent_by', nick=user.nick) }}">Прислал цитат:</a></td>
-		  <td>{{ user.sent.count() }}</td>
+		  <td>Прислал цитат:</td>
+		  <td>{{ user.sent.count() }}
+		  {% if user.sent.count() %}
+		  (<a href="{{ url_for('qlist.sent_by', nick=user.nick) }}">список</a>)
+		  {% endif %}
+		  </td>
 	  </tr>
-	  {% else %}
-	  <tr>
-		  <td>Прислал цитат:</td><td>0</td>
-	  </tr>
-	  {% endif %}
-	  {% if user.is_approver() %}{# может, для всех? #}
+	  {% if user.is_approver() or user.approved.count() %}{# если может аппрувить в принципе или уже не может, но успел что-то зааппрувить #}
 	  {% if user.approved.count() %}
 	  <tr>
-		  <td><a href="{{ url_for('qlist.approved_by', nick=user.nick) }}">Одобрил цитат:</a></td>
-		  <td><a href="{{ url_for('qlist.approved_by', nick=user.nick) }}">{{ user.approved.count() }}</a></td>
+		  <td>Одобрил цитат:</td>
+		  <td>{{ user.approved.count() }}
+		  {% if user.approved.count() %}
+		  (<a href="{{ url_for('qlist.approved_by', nick=user.nick) }}">список</a>)
+		  {% endif %}
+		  </td>
 	  </tr>
 	  {% else %}
 	  <tr>

@@ -65,7 +65,8 @@ class User(db.Model):
     rights = db.Column(db.SmallInteger) # 0=normal, 1=approver, 2=releaser, 99=banned
     RIGHTS_NORMAL = 0
     RIGHTS_APPROVER = 1
-    RIGHTS_RELEASER = 2
+    RIGHTS_RELEASER = 2 # может добавлять релизы
+    RIGHTS_ADMIN = 3 # может редактировать других пользователей
     RIGHTS_BANNED = -1
     canComment = db.Column(db.SmallInteger) # 0=normal, 1=moderator, 99=banned
     CMT_NORMAL = 0
@@ -85,7 +86,10 @@ class User(db.Model):
         return '<User %s (openid %s, rights %i, c_rights %i)' % (self.nick, self.openid, self.rights, self.canComment)
 
     def is_approver(self):
-        return self.rights in (self.RIGHTS_APPROVER, self.RIGHTS_RELEASER)
+        return self.rights in (self.RIGHTS_APPROVER, self.RIGHTS_RELEASER, self.RIGHTS_ADMIN)
+
+    def is_admin(self):
+        return self.rights == self.RIGHTS_ADMIN
 
 class Comment(db.Model):
     __tablename__ = 'comments'
