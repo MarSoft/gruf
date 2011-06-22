@@ -54,9 +54,15 @@ def approve(qid):
         abort(403, u'Вы не можете одобрять цитаты')
     quote = Quote.query.get_or_404(qid)
     if quote.is_approved():
-        flash(u'Цитата уже одобрена!', 'warning')
+        flash(u'Цитата #%d уже одобрена!' % qid, 'warning')
         return redirect(url_for('quote.index', qid=qid))
-    pass
+    from datetime import datetime
+    quote.approver = g.user
+    quote.approvedate = datetime.now()
+    quote.state = Quote.STATE_APPROVED
+    db.session.commit()
+    flash(u'Цитата #%d одобрена' % qid, 'info')
+    return redirect(url_for('quote.index', qid=qid))
 
 @quote.route('/<int:qid>/edit', methods=['GET', 'POST'])
 def edit(qid):
