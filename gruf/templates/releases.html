@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}Релизы{% endblock %}
+
+{% block head %}
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='MODULE.css') }}" />
+{% endblock %}
+
+{% block content %}
+<h1>Релизы</h1>
+{% if g.user and g.user.is_releaser() %}
+<a href="{{ url_for('releases.create') }}">Создать</a>
+{% endif %}
+<table border='1'>
+	<tr>
+		<th>Дата</th>
+		<th>Версия</th>
+		<th>Число цитат</th>
+		<th>В дереве</th>
+		<th>Скачать</th>
+	</tr>
+	{% for release in releases %}
+	<tr>
+		<td>{{ release.birthDate.strftime('%d.%m.%Y %H:%M') }}</td>
+		<td>{{ release.version }}</td>
+		<td>{{ release.count }}</td>
+		<td>{{ ['Нет', 'Да'][release.inTree] }}</td>
+		<td><a href="{{ url_for('releases.get', ver=release.version) }}">base</a>
+			<a href="{{ url_for('releases.get_offensive', ver=release.version) }}">offensive</a></td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}
+
+{# vim: set syntax=htmljinja: #}
