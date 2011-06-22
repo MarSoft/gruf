@@ -8,7 +8,7 @@
 
 {% block content %}
   <h1>Пользователь <a href="{{ url_for('profile', nick=user.nick) }}">{{ user.nick }}</a></h1>
-  {% if False %}{# TODO: если текущий_пользователь.is #}
+  {% if g.user and g.user.is_admin() or user == g.user %}{# если админ или если это свой же профиль #}
   <a href="{{ url_for('edit', nick=user.nick) }}">Редактировать</a>
   {% endif %}
   <table>
