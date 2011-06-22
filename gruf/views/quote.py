@@ -56,9 +56,10 @@ def add():
 
 @quote.route('/<int:qid>/edit', methods=['GET', 'POST'])
 def edit(qid):
-    if not g.user or not g.user.is_approver(): # только аппрувер может править цитаты
-        abort(403, u'У Вас недостаточно прав для выполнения этого действия')
     quote = Quote.query.get_or_404(qid)
+    if not g.user or (not g.user.is_approver() and g.user != quote.sender): # только аппрувер может править цитаты
+        # но отправитель может править свою цитату, пока она в бездне
+        abort(403, u'У Вас недостаточно прав для выполнения этого действия')
     if quote.is_approved() and not g.user.is_admin(): # только админ может менять уже зааппрувленные цитаты
         abort(403, u'У Вас недостаточно прав для выполнения этого действия')
 

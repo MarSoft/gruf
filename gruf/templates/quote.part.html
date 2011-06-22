@@ -9,7 +9,7 @@
 {% endif %}</p>
 <p>Оскорбительная: {{ ['неизвестно', 'да', 'нет'][quote.offensive] }}</p>
 {% if g.user %}
-{%   if g.user.is_admin() or (not quote.is_approved() and g.user.is_approver()) %}
+{%   if g.user.is_admin() or (not quote.is_approved() and g.user.is_approver()) or g.user == quote.sender %}
 <a href="{{ url_for('quote.edit', qid=quote.id) }}">Правка</a>
 {%   endif %}
 {%   if (quote.is_approved() and (g.user == quote.approver or g.user.is_admin()))
