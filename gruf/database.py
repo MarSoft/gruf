@@ -66,13 +66,13 @@ class User(db.Model):
     openid = db.Column(db.String(MAX_URI), unique = True) # None, если не зарегистрирован
     email = db.Column(db.String(128))
     registered = db.Column(db.DateTime)
-    rights = db.Column(db.SmallInteger) # 0=normal, 1=approver, 2=releaser, 99=banned
+    rights = db.Column(db.SmallInteger)
     RIGHTS_NORMAL = 0
     RIGHTS_APPROVER = 1
     RIGHTS_RELEASER = 2 # может добавлять релизы
     RIGHTS_ADMIN = 3 # может редактировать других пользователей
     RIGHTS_BANNED = -1
-    canComment = db.Column(db.SmallInteger) # 0=normal, 1=moderator, 99=banned
+    canComment = db.Column(db.SmallInteger)
     CMT_NORMAL = 0
     CMT_MODERATOR = 1
     CMT_BANNED = -1
@@ -100,6 +100,9 @@ class User(db.Model):
 
     def is_approver(self):
         return self.rights in (self.RIGHTS_APPROVER, self.RIGHTS_RELEASER, self.RIGHTS_ADMIN)
+
+    def is_releaser(self):
+        return self.rights in (self.RIGHTS_RELEASER, self.RIGHTS_ADMIN)
 
     def is_admin(self):
         return self.rights == self.RIGHTS_ADMIN
