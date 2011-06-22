@@ -11,7 +11,10 @@ def index():
     if g.user is not None:
         return redirect(oid.get_next_url())
     if request.method == 'POST':
-        openid = request.form.get('openid')
+        if request.form.get('gentoo'):
+            openid = 'http://www.gentoo.ru/users/%s/identity' % request.form.get('login')
+        else:
+            openid = request.form.get('openid')
         if openid:
             return oid.try_login(openid, ask_for=['nickname', 'email'])
     return render_template('login.html', next=oid.get_next_url(), error=oid.fetch_error())

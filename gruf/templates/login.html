@@ -8,10 +8,17 @@
 
 {% block content %}
 <h1>Вход</h1>
-<form action="" method="post">
 	{% if error %}<p class='error'><strong>Ошибка:</strong> {{ error }}</p>{% endif %}
-	OpenID:
+<form action="" method="post">
+	Введите любой OpenID:
 	<input type="text" name="openid" size="30"/>
+	<input type="submit" value="Вход"/>
+	<input type="hidden" name="next" value="{{ next }}"/>
+</form>
+<form action="" method="post">
+	Или логин на Gentoo.Ru:
+	<input type="text" name="login" size="30"/>
+	<input type="hidden" name="gentoo" value="1"/>
 	<input type="submit" value="Вход"/>
 	<input type="hidden" name="next" value="{{ next }}"/>
 </form>
