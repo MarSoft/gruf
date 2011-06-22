@@ -83,6 +83,6 @@ def sent_by(nick, mod=None):
 @qlist.route('/approved-by/<nick>/<path:mod>')
 def approved_by(nick, mod=None):
     return display(Quote.query.filter_by(
-        sender_id=nick, state=Quote.STATE_APPROVED),
+        approver_id=nick, state=Quote.STATE_APPROVED),
         u'Цитаты, одобренные пользователем %s' % nick,
         mod)
