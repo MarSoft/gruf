@@ -20,6 +20,11 @@
 		<a href="{{ url_for('login.index') }}">Вход</a>
 		{% endif %}
 	</div>
+<div id='flash'>
+{% for category, msg in get_flashed_messages(with_categories=True) %}
+<p class='flash-{{ category }}'>{{ msg }}</p>
+{% endfor %}
+</div>
 {% block content %}{% endblock %}
 </body>
 </html>
