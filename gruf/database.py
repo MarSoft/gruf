@@ -60,7 +60,8 @@ class Quote(db.Model):
 class User(db.Model):
     __tablename__ = 'users'
     nick = db.Column(db.String(64), primary_key = True)
-    openid = db.Column(db.String(MAX_URI)) # None, если не зарегистрирован
+    openid = db.Column(db.String(MAX_URI), unique = True) # None, если не зарегистрирован
+    email = db.Column(db.String(128))
     registered = db.Column(db.DateTime)
     rights = db.Column(db.SmallInteger) # 0=normal, 1=approver, 2=releaser, 99=banned
     RIGHTS_NORMAL = 0
@@ -74,8 +75,9 @@ class User(db.Model):
     CMT_BANNED = -1
     emailConfirmed = db.Column(db.Boolean)
 
-    def __init__(self, nick, openid = None, rights = RIGHTS_NORMAL, canComment = CMT_NORMAL, registered = datetime.now(), emailConfirmed = False):
+    def __init__(self, nick, email = None, openid = None, rights = RIGHTS_NORMAL, canComment = CMT_NORMAL, registered = datetime.now(), emailConfirmed = False):
         self.nick = nick
+        self.email = email
         self.openid = openid
         self.registered = registered
         self.rights = rights
