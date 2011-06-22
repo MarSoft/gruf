@@ -1,20 +1,44 @@
 # -*- coding: utf-8 -*-
-from flask import Module
-from flask import g, session
-from gruf.database import User
+from flask import Module, g, session, request, flash, redirect, render_template
+from gruf import oid
+from gruf.database import User, db
 
 login = Module(__name__)
 
-@login.before_request
-def lookup_current_user():
-    g.user = None
-    if 'openid' in session:
-        g.user = User.query.filter_by(openid=openid).first()
-
-@login.route('/')
+@login.route('/', methods=['GET', 'POST'])
+@oid.loginhandler
 def index():
+    if g.user is not None:
+        return redirect(oid.get_next_url())
+    if request.method == 'POST':
+        openid = request.form.get('openid')
+        if openid:
+            return oid.try_login(openid, ask_for=['nickname',
+                ])#'email', 'fullname', 'nickname'])
+    return render_template('login.html', next=oid.get_next_url(), error=oid.fetch_error())
     return 'Hello World!'
+
+@oid.after_login
+def do_auth(resp):
+    print 'in do_auth'
+    session['openid'] = resp.identity_url
+    user = User.query.filter_by(openid=resp.identity_url).first()
+    if user is None: # регистрируем
+        nick = resp.nickname
+        n=2
+        while User.query.filter_by(nick=nick).count() > 0: # обеспечиваем уникальность ника
+            nick = '%s_%d' % (resp.nickname, n)
+            n += 1
+        user = User(nick, resp.email, openid=resp.identity_url)
+        db.session.add(user)
+        db.session.commit()
+        flash(u'Пользователь зарегистрирован')
+    flash(u'Вход выполнен')
+    g.user = user
+    return redirect(oid.get_next_url())
 
 @login.route('/logout')
 def logout():
-    return 'Hello: logouting?'
+    session.pop('openid', None)
+    flash(u'Вы вышли из системы')
+    return redirect(oid.get_next_url())

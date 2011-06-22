@@ -1,6 +1,13 @@
+# -*- coding: utf-8 -*-
+
 from flask import Flask
+from flask import g, session
+from flaskext.openid import OpenID
+import config
 
 app = Flask(__name__)
+app.secret_key = config.SECRET_KEY
+oid = OpenID(app)
 
 from gruf.views.main import main
 from gruf.views.login import login
@@ -16,3 +23,10 @@ app.register_module(abyss, url_prefix='/abyss')
 app.register_module(quote, url_prefix='/quote')
 app.register_module(users, url_prefix='/users')
 app.register_module(releases, url_prefix='/releases')
+
+@app.before_request
+def lookup_current_user():
+    g.user = None
+    if 'openid' in session:
+        from gruf.database import User
+        g.user = User.query.filter_by(openid=session['openid']).first() # first: если нет, то None
