@@ -24,10 +24,11 @@ def display(quotes, title, mod=None, offense=None, abyss=False):
     elif mod == 'fortunes' or mod == 'fortunes.gz':
         resp = render_template('fortunes', **locals())
         if mod == 'fortunes.gz': # compressing
-            import gzip, cStringIO
+            import gzip, cStringIO, codecs
             buff = cStringIO.StringIO()
             gzfile = gzip.GzipFile(mode='wb', fileobj=buff, compresslevel=9) # 9 - по умолчанию, можно поменять
-            gzfile.write(resp)
+            w = codecs.getwriter('utf-8')(gzfile)
+            w.write(unicode(resp))
             gzfile.close()
             resp = buff.getvalue()
             return Response(resp, mimetype='application/x-gzip') # FIXME: использовать make_response
