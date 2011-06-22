@@ -58,8 +58,10 @@ def edit(qid):
 
     form = QuoteEditForm(request.form, quote)
     if request.method == 'POST' and form.validate():
-        if g.user.is_admin():
+        if g.user and g.user.is_admin():
             quote.state = form.state.data
+        elif form.state.data:
+            abort(403) # а то ходют тут всякие, присылают формы левые...
         quote.text = form.text.data
         quote.author = form.author.data
         quote.source = form.source.data
