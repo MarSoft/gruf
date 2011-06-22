@@ -74,8 +74,9 @@ class User(db.Model):
     CMT_MODERATOR = 1
     CMT_BANNED = -1
     emailConfirmed = db.Column(db.Boolean)
+    showOffensiveByDefault = db.Column(db.Boolean) # показывать ли по умолчанию offensive-цитаты
 
-    def __init__(self, nick, email = None, openid = None, rights = RIGHTS_NORMAL, canComment = CMT_NORMAL, registered = datetime.now(), emailConfirmed = False):
+    def __init__(self, nick, email = None, openid = None, rights = RIGHTS_NORMAL, canComment = CMT_NORMAL, registered = datetime.now(), emailConfirmed = False, showOffensiveByDefault = False):
         self.nick = nick
         self.email = email
         self.openid = openid
@@ -83,6 +84,7 @@ class User(db.Model):
         self.rights = rights
         self.canComment = canComment
         self.emailConfirmed = emailConfirmed
+        self.showOffensiveByDefault = showOffensiveByDefault
 
     def __repr__(self):
         return '<User %s (openid %s, rights %i, c_rights %i)' % (self.nick, self.openid, self.rights, self.canComment)
