@@ -9,6 +9,14 @@
 {% block content %}
 <h1>Цитатник Gentoo.Ru</h1>
 <p>Добро пожаловать!</p>
+<p>На данный момент у нас есть:</p>
+<ul>
+	<li>Цитат: {{ quotes.count() }}
+	(из них в <a href="{{ url_for('abyss.index') }}">бездне</a>: {{ quotes.filter_by(state=0).count() }},
+	<a href="{{ url_for('qlist.index') }}">одобрено</a>: {{ quotes.filter_by(state=1).count() }})</li>
+	<li><a href="{{ url_for('users.index') }}">Пользователей</a>: {{ users.count() }}</li>
+	<li>Комментариев: {{ comments.count() }}</li>
+	<li><a href="{{ url_for('releases.index') }}">Релизов</a>: {{ releases.count() }}</li>
 {% endblock %}
 
 {# vim: set syntax=htmljinja: #}
