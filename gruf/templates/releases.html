@@ -25,8 +25,8 @@
 		<td>{{ release.version }}</td>
 		<td>{{ release.count }}</td>
 		<td>{{ ['Нет', 'Да'][release.inTree] }}</td>
-		<td><a href="{{ url_for('releases.get', ver=release.version) }}">base</a>
-			<a href="{{ url_for('releases.get_offensive', ver=release.version) }}">offensive</a></td>
+		<td><a href="{{ url_for('releases.get', ver=release.version, f=release.filename()) }}">base</a>
+			<a href="{{ url_for('releases.get_offensive', ver=release.version, f=release.filename(True)) }}">offensive</a></td>
 	</tr>
 	{% endfor %}
 </table>

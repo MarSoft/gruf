@@ -169,7 +169,7 @@ class Release(db.Model):
         Возвращает имя файла.
         @param offensive: если True, то будет возвращено имя файла offensive-цитат для данной версии
         """
-        return 'gentoo-ru-%d%s.gz' % (self.version, ['','-offensive'][offensive])
+        return 'gentoo-ru%s-%d.gz' % (['','-offensive'][offensive], self.version)
 
     def __repr__(self):
         return '<Release v%i (%i quotes)>' % (self.version, self.count)
