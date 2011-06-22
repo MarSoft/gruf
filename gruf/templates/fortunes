@@ -1,0 +1,4 @@
+{% for quote in quotes %}{{ quote.text }}
+		-- {{ quote.author }} ({{ quote.source }})
+%
+{% endfor %}

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Module, g, request, render_template, abort
+from flask import Module, g, request, render_template, abort, Response
 from sqlalchemy.sql import not_
 from gruf.database import Quote
 
@@ -32,10 +32,24 @@ def display(quotes, title, mod=None):
     else:
         abort(404, u'Неправильное значение переменной offensive=%s' % offense)
 
-    # пагинация
-
-    quotes = quotes.all()
-    return render_template('list.html', **locals())
+    if not mod: # по умолчанию - список в html с пагинацией
+        # пагинация
+        return render_template('list.html', **locals())
+    elif mod == 'fortunes' or mod == 'fortunes.gz':
+        quotes = quotes.all()
+        resp = render_template('fortunes', **locals())
+        if mod == 'fortunes.gz': # compressing
+            import gzip, cStringIO
+            buff = cStringIO.StringIO()
+            gzfile = gzip.GzipFile(mode='wb', fileobj=buff, compresslevel=9) # 9 - по умолчанию, можно поменять
+            gzfile.write(resp)
+            gzfile.close()
+            resp = buff.getvalue()
+            return Response(resp, mimetype='application/x-gzip')
+        else:
+            return Response(resp, mimetype='text/plain')
+    else:
+        abort(404)
 
 @qlist.route('/')
 @qlist.route('/<path:mod>')
