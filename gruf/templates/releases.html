@@ -11,7 +11,9 @@
 <p>
 <b>Статистика по цитатам:</b>
 <table>
-	<tr><td>В последнем релизе:</td><td>{{ latest.count }}+{{ latest.offencount }}</td></tr>
+	<tr><td>В последнем релизе:</td><td>{{ latest.count }}+{{ latest.offencount }}
+			(скачать: <a href="{{ url_for('qlist.offensive', offense='no', mod='fortunes.gz') }}">base</a>,
+			<a href="{{ url_for('qlist.offensive', offense='only', mod='fortunes.gz') }}">offensive</a>)</td></tr>
 	<tr><td>Всего в базе данных:</td><td> {{ qcount }}+{{ offencount }}</td></tr>
 	<tr><td>Не вошло в релизы:</td><td> {{ qcount-latest.count }}+{{ offencount-latest.offencount }}={{ qcount+offencount-latest.count-latest.offencount }}</tr></td>
 </table>
