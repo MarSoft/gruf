@@ -12,6 +12,10 @@
 {%   if g.user.is_admin() or (not quote.is_approved() and g.user.is_approver()) %}
 <a href="{{ url_for('quote.edit', qid=quote.id) }}">Правка</a>
 {%   endif %}
+{%   if (quote.is_approved() and (g.user == quote.approver or g.user.is_admin()))
+	or (g.user == quote.sender or g.user.is_approver()) %}
+<a href="{{ url_for('quote.delete', qid=quote.id) }}">Удалить</a>
+{%   endif %}
 {% endif %}
 </div>
 {# vim: set syntax=htmljinja: #}
