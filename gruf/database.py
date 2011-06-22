@@ -92,6 +92,12 @@ class User(db.Model):
     def __repr__(self):
         return '<User %s (openid %s, rights %i, c_rights %i)' % (self.nick, self.openid, self.rights, self.canComment)
 
+    def can_post(self):
+        return not self.rights == self.RIGHTS_BANNED
+
+    def can_comment(self):
+        return not self.canComment == self.CMT_BANNED
+
     def is_approver(self):
         return self.rights in (self.RIGHTS_APPROVER, self.RIGHTS_RELEASER, self.RIGHTS_ADMIN)
 
