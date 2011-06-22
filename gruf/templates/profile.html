@@ -32,6 +32,12 @@
 		  <td>Права комментирования:</td>
 		  <td>{{ {0:'комментатор', 1:'модератор', -1:'баня'}[user.canComment] }}</td>
 	  </tr>
+	  {% if g.user and g.user.is_admin() or user == g.user %}{# если админ или если это свой же профиль #}
+	  <tr>
+		  <td>Показывать offensive по умолчанию:</td>
+		  <td>{{ ['нет', 'да'][user.showOffensiveByDefault] }}</td>
+	  </tr>
+	  {% endif %}
 	  <tr>
 		  <td>Прислал цитат:</td>
 		  <td>{{ user.sent.count() }}
