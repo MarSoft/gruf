@@ -10,3 +10,10 @@
 #flash p .flash-error, .error, .errors li {
 	background: #fdd;
 }
+form ul {
+	list-style-image: none;
+	padding: 0;
+}
+form ul li {
+	display: block;
+}
