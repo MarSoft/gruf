@@ -44,11 +44,11 @@ def add():
                 offensive=[Quote.OFF_UNKNOWN, Quote.OFF_OFFENSIVE][form.offensive.data]) # если вкл, то offensive, иначе неизвестно
         db.session.add(quote)
         db.session.commit()
-        flash(u'Цитата добавлена')
+        flash(u'Цитата #%d добавлена' % quote.id)
         return redirect(url_for('quote.index', qid=quote.id))
     return render_template('quote.edit.html', form=form, quote=None)
 
-@quote.route('/<int:qid>/edit/', methods=['GET', 'POST'])
+@quote.route('/<int:qid>/edit', methods=['GET', 'POST'])
 def edit(qid):
     if not g.user or not g.user.is_approver(): # только аппрувер может править цитаты
         abort(403, u'У Вас недостаточно прав для выполнения этого действия')
@@ -66,6 +66,26 @@ def edit(qid):
         #quote.prooflink = form.prooflink.data
         #quote.offensive = form.offensive.data
         db.session.commit()
-        flash(u'Цитата отредактирована')
+        flash(u'Цитата #%d отредактирована' % qid)
         return redirect(url_for('quote.index', qid=qid))
     return render_template('quote.edit.html', quote=quote, form=form) # locals?
+
+@quote.route('/<int:qid>/delete', methods=['GET', 'POST'])
+def delete(qid):
+    quote = Quote.query.get_or_404(qid)
+    if not g.user:
+        abort(403)
+    if quote.is_approved():
+        if g.user != quote.approver and not g.user.is_admin():
+            abort(403, u'Только админ или аппрувер может удалить одобренную цитату')
+    else:
+        if g.user != quote.sender and not g.user.is_approver():
+            abort(403, u'Только аппрувер или отправитель может удалить цитату из бездны')
+
+    db.session.delete(quote)
+    db.session.commit()
+    flash(u'Цитата #%d удалена' % qid)
+    if quote.is_approved():
+        return redirect(url_for('qlist.index'))
+    else:
+        return redirect(url_for('abyss.index'))
