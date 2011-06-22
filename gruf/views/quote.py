@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Module, g, request, flash, render_template, abort, redirect, url_for
 from gruf.database import Quote, User, MAX_URI, db
-from wtforms import Form, BooleanField, RadioField, TextField, TextAreaField, validators
+from wtforms import Form, BooleanField, SelectField, RadioField, TextField, TextAreaField, validators
 
 quote = Module(__name__)
 
@@ -19,15 +19,15 @@ class QuoteAddForm(Form):
     author = TextField(u'Автор', [validators.Length(min=1, max=64), validators.Optional()])
     source = TextField(u'Источник', [validators.Length(min=2, max=64)])
     prooflink = TextField(u'Пруфлинк', [validators.Length(max=MAX_URI), validators.URL(message=u'Это не похоже на URL!')])
-    offensive = BooleanField(u'Оффенсивная')
+    offensive = BooleanField(u'Грубая цитата')
 
 class QuoteEditForm(QuoteAddForm):
-    state = RadioField(u'Статус', choices=[
+    state = SelectField(u'Статус', choices=[
         (0, u'Бездна'),
         (1, u'Одобрено'),
         (2, u'Свалка (отклонено)'),
         ], coerce=int)
-    offensive = RadioField(u'Offensive', choices=[
+    offensive = RadioField(u'Грубая цитата', choices=[
         (0, u'Неизвестно'),
         (1, u'Да'),
         (2, u'Нет'),

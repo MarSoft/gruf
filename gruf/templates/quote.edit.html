@@ -24,7 +24,7 @@
 {% endmacro %}
 {% if quote %}{# редактор #}
 	<tr>
-		<td>ID:</td>
+		<td>ID</td>
 		<td>{{ quote.id }}</td>
 	</tr>
 {%   if g.user and g.user.is_admin() %}
@@ -37,13 +37,16 @@
 	{{ render_field(form.prooflink) }}
 {% if quote %}{# редактор #}
 	<tr>
-		<td>Отправитель:</td>
-		<td>{{ quote.sender.nick }}</td>
+		<td>Прислал</td>
+		<td>{{ quote.sender.nick }}, {{ quote.senddate.strftime('%H:%M %d.%m.%Y') }}</td>
 	</tr>
+{%   if quote.approver %}
 	<tr>
-		<td>Одобрил:</td>
-		<td>{{ quote.approver_id }}</td>
+		<td>Одобрил</td>
+		<td>{{ quote.approver_id }}{% if quote.approvedate %},
+			{{ quote.approvedate.strftime('%H:%M %d.%m.%Y') }}{% endif %}</td>
 	</tr>
+{%   endif %}
 {% endif %}
 	{{ render_field(form.offensive) }}
 	<tr>
