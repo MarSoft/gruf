@@ -33,6 +33,12 @@ class QuoteEditForm(QuoteAddForm):
         (2, u'Нет'),
         ], coerce=int)
 
+@quote.route('/preview', methods=['GET', 'POST'])
+def preview():
+    if g.user and not g.user.can_post():
+        abort(403)
+    abort(501)
+
 @quote.route('/add', methods=['GET', 'POST'])
 def add():
     if g.user and not g.user.can_post():
