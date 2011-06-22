@@ -25,13 +25,12 @@ def display(quotes, title, mod=None):
         pass # ничего не фильтруем
     elif offense in ['no', '0', 0]:
         offense = 'no'
-        quotes = quotes.filter_by(offensive=Quote.OFF_GOOD)
+        quotes = quotes.filter(not_(Quote.offensive == Quote.OFF_OFFENSIVE))
     elif offense in ['only', '2', 2]:
         offense = 'only'
         quotes = quotes.filter_by(offensive=Quote.OFF_OFFENSIVE)
     else:
         abort(404, u'Неправильное значение переменной offensive=%s' % offense)
-        quotes = quotes.filter(not_(Quote.offensive == Quote.OFF_OFFENSIVE))
 
     # пагинация
 
