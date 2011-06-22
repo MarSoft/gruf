@@ -8,5 +8,10 @@
 {% if quote.approvedate %} в {{ quote.approvedate.strftime('%H:%M %d.%m.%Y') }}{% endif %}
 {% endif %}</p>
 <p>Оскорбительная: {{ ['неизвестно', 'да', 'нет'][quote.offensive] }}</p>
+{% if g.user %}
+{%   if g.user.is_admin() or (not quote.is_approved() and g.user.is_approver()) %}
+<a href="{{ url_for('quote.edit', qid=quote.id) }}">Правка</a>
+{%   endif %}
+{% endif %}
 </div>
 {# vim: set syntax=htmljinja: #}
