@@ -41,7 +41,7 @@ def add():
     if request.method == 'POST' and form.validate():
         quote = Quote(form.text.data, form.author.data, form.source.data, form.prooflink.data,
                 g.user or User.query.get('anonymous'),
-                offensive=form.offensive.data or None)
+                offensive=[Quote.OFF_UNKNOWN, Quote.OFF_OFFENSIVE][form.offensive.data]) # если вкл, то offensive, иначе неизвестно
         db.session.add(quote)
         db.session.commit()
         flash(u'Цитата добавлена')
