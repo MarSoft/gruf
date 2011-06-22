@@ -8,9 +8,17 @@
 
 {% block content %}
 <h1>Релизы</h1>
+<p>
+<b>Статистика по цитатам:</b>
+<table>
+	<tr><td>В последнем релизе:</td><td>{{ latest.count }}+{{ latest.offencount }}</td></tr>
+	<tr><td>Всего в базе данных:</td><td> {{ qcount }}+{{ offencount }}</td></tr>
+	<tr><td>Не вошло в релизы:</td><td> {{ qcount-latest.count }}+{{ offencount-latest.offencount }}={{ qcount+offencount-latest.count-latest.offencount }}</tr></td>
+</table>
 {% if g.user and g.user.is_releaser() %}
-<a href="{{ url_for('releases.create') }}">Создать</a>
+<a href="{{ url_for('create') }}">Создать релиз</a>
 {% endif %}
+</p>
 <table border='1'>
 	<tr>
 		<th>Дата</th>

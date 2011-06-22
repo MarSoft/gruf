@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 from flask import Module, url_for, flash, render_template, abort, redirect
-from gruf.database import Release, db
+from gruf.database import Release, Quote, db
 
 releases = Module(__name__)
 
 @releases.route('/')
 def index():
-    releases = Release.query.order_by(Release.version).all()
-    return render_template('releases.html', releases=releases)
+    releases = Release.query.order_by(Release.version)
+    _qq = Quote.query.filter_by(state=Quote.STATE_APPROVED)
+    qcount = _qq.filter_by(offensive=Quote.OFF_GOOD).count()
+    offencount = _qq.filter_by(offensive=Quote.OFF_OFFENSIVE).count()
+    del _qq
+    latest = Release.query.order_by(Release.version.desc()).first()
+    return render_template('releases.html', **locals())
 
 @releases.route('/create')
 def create():
