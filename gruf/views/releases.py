@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Module, render_template, abort, redirect
+from flask import Module, url_for, render_template, abort, redirect
 from gruf.database import Release
 
 releases = Module(__name__)
@@ -11,14 +11,22 @@ def index():
 
 @releases.route('/create')
 def create():
-    abort(300)
+    abort(501)
 
 @releases.route('/<int:ver>/get/')
 @releases.route('/<int:ver>/get/<f>')
 def get(ver, f=None):
-    abourt(300)
+    r = Release.query.get_or_404(ver)
+    if not f:
+        return redirect(url_for('get', ver=ver, f=r.filename()), code=301)
+    abort(501)
+    return redirect('куда-то...', code=301)
 
 @releases.route('/<int:ver>/get-offensive/')
 @releases.route('/<int:ver>/get-offensive/<f>')
 def get_offensive(ver, f=None):
-    abort(300)
+    r = Release.query.get_or_404(ver)
+    if not f:
+        return redirect(url_for('get_offensive', ver=ver, f=r.filename(offensive=True)), code=301)
+    abort(501)
+    return redirect('куда-то...', code=301)
