@@ -1,6 +1,11 @@
 <h3><a href='{{ url_for('quote.index', qid=quote.id) }}'>Цитата #{{ quote.id }}</a></h3>
 <pre>{{ quote.text }}
 		-- {{ quote.author }} ({{ quote.source }})</pre>
-<p>Цитату прислал <a href="{{ url_for('users.profile', nick=quote.sender.nick) }}">{{ quote.sender.nick }}</a>, одобрил <a href="{{ url_for('users.profile', nick=quote.approver.nick) }}">{{ quote.approver.nick }}</a></p>
+<p>Цитату прислал <a href="{{ url_for('users.profile', nick=quote.sender.nick) }}">{{ quote.sender.nick }}</a>
+в {{ quote.senddate.strftime('%H:%M %d.%m.%Y') }}{% if quote.approver %},
+одобрил <a href="{{ url_for('users.profile', nick=quote.approver.nick) }}">{{ quote.approver.nick }}</a>
+{% if quote.approvedate %} в {{ quote.approvedate.strftime('%H:%M %d.%m.%Y') }}{% endif %}
+{% endif %}</p>
+<p>Оскорбительная: {{ ['неизвестно', 'да', 'нет'][quote.offensive] }}</p>
 
 {# vim: set syntax=htmljinja: #}
