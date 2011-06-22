@@ -42,13 +42,15 @@ class Quote(db.Model):
     OFF_GOOD = 2
 
     def __init__(self, text, author, source, prooflink, sender,
-            senddate = datetime.now(), approver = None, approvedate = None, offensive = OFF_UNKNOWN, state = STATE_ABYSS):
+            senddate = None, approver = None, approvedate = None, offensive = OFF_UNKNOWN, state = STATE_ABYSS):
         self.text = text
         self.author = author
         self.source = source
         self.prooflink = prooflink
         self.sender = sender
         self.approver = approver
+        if not senddate:
+            datetime.now()
         self.senddate = senddate
         self.approvedate = approvedate
         self.offensive = offensive
@@ -79,10 +81,12 @@ class User(db.Model):
     emailConfirmed = db.Column(db.Boolean)
     showOffensiveByDefault = db.Column(db.Boolean) # показывать ли по умолчанию offensive-цитаты
 
-    def __init__(self, nick, email = None, openid = None, rights = RIGHTS_NORMAL, canComment = CMT_NORMAL, registered = datetime.now(), emailConfirmed = False, showOffensiveByDefault = False):
+    def __init__(self, nick, email = None, openid = None, rights = RIGHTS_NORMAL, canComment = CMT_NORMAL, registered = None, emailConfirmed = False, showOffensiveByDefault = False):
         self.nick = nick
         self.email = email
         self.openid = openid
+        if not registered:
+            registered = datetime.now()
         self.registered = registered
         self.rights = rights
         self.canComment = canComment
@@ -117,10 +121,12 @@ class Comment(db.Model):
     sender = db.relationship('User', backref=db.backref('comments', lazy='dynamic'))
     date = db.Column(db.DateTime)
 
-    def __init__(self, quote, text, sender, date = datetime.now()):
+    def __init__(self, quote, text, sender, date = None):
         self.quote = quote
         self.text = text
         self.sender_id = sender
+        if not date:
+            date = datetime.now()
         self.date = date
 
     def __repr__(self):
@@ -149,9 +155,11 @@ class Release(db.Model):
     inTree = db.Column(db.Boolean)
     isHidden = db.Column(db.Boolean)
 
-    def __init__(self, version, count, birthDate = datetime.now(), inTree = False, isHidden = False):
+    def __init__(self, version, count, birthDate = None, inTree = False, isHidden = False):
         self.version = version
         self.count = count
+        if not birthDate:
+            birthDate = datetime.now()
         self.birthDate = birthDate
         self.inTree = inTree
         self.isHidden = isHidden
