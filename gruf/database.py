@@ -153,5 +153,12 @@ class Release(db.Model):
         self.inTree = inTree
         self.isHidden = isHidden
 
+    def filename(self, offensive=False):
+        """
+        Возвращает имя файла.
+        @param offensive: если True, то будет возвращено имя файла offensive-цитат для данной версии
+        """
+        return 'gentoo-ru-%d%s.gz' % (self.version, ['','-offensive'][offensive])
+
     def __repr__(self):
         return '<Release v%i (%i quotes)>' % (self.version, self.count)
