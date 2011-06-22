@@ -27,7 +27,9 @@
 		<td>ID:</td>
 		<td>{{ quote.id }}</td>
 	</tr>
+{%   if g.user and g.user.is_admin() %}
 	{{ render_field(form.state) }}
+{%   endif %}
 {% endif %}
 	{{ render_field(form.text) }}
 	{{ render_field(form.author) }}

@@ -48,6 +48,28 @@ def add():
         return redirect(url_for('quote.index', qid=quote.id))
     return render_template('quote.edit.html', form=form, quote=None)
 
+@quote.route('/<int:qid>/edit', methods=['GET', 'POST'])
+def edit(qid):
+    if not g.user or not g.user.is_approver(): # только аппрувер может править цитаты
+        abort(403, u'У Вас недостаточно прав для выполнения этого действия')
+    quote = Quote.query.get_or_404(qid)
+    if quote.is_approved() and not g.user.is_admin(): # только админ может менять уже зааппрувленные цитаты
+        abort(403, u'У Вас недостаточно прав для выполнения этого действия')
+
+    form = QuoteEditForm(request.form, quote)
+    if request.method == 'POST' and form.validate():
+        if g.user.is_admin():
+            quote.state = form.state.data
+        quote.text = form.text.data
+        quote.author = form.author.data
+        quote.source = form.source.data
+        quote.prooflink = form.prooflink.data
+        quote.offensive = form.offensive.data
+        db.session.commit()
+        flash(u'Цитата #%d отредактирована' % qid, 'info')
+        return redirect(url_for('quote.index', qid=qid))
+    return render_template('quote.edit.html', quote=quote, form=form) # locals?
+
 @quote.route('/<int:qid>/approve', methods=['GET', 'POST'])
 def approve(qid):
     if not g.user or not g.user.is_approver():
@@ -63,28 +85,6 @@ def approve(qid):
     db.session.commit()
     flash(u'Цитата #%d одобрена' % qid, 'info')
     return redirect(url_for('quote.index', qid=qid))
-
-@quote.route('/<int:qid>/edit', methods=['GET', 'POST'])
-def edit(qid):
-    if not g.user or not g.user.is_approver(): # только аппрувер может править цитаты
-        abort(403, u'У Вас недостаточно прав для выполнения этого действия')
-    quote = Quote.query.get_or_404(qid)
-    if quote.is_approved() and not g.user.is_admin(): # только админ может менять уже зааппрувленные цитаты
-        abort(403, u'У Вас недостаточно прав для выполнения этого действия')
-
-    form = QuoteEditForm(request.form, quote)
-    if request.method == 'POST' and form.validate():
-        form.populate_obj(quote)
-        #quote.state = form.state.data
-        #quote.text = form.text.data
-        #quote.author = form.author.data
-        #quote.source = form.source.data
-        #quote.prooflink = form.prooflink.data
-        #quote.offensive = form.offensive.data
-        db.session.commit()
-        flash(u'Цитата #%d отредактирована' % qid, 'info')
-        return redirect(url_for('quote.index', qid=qid))
-    return render_template('quote.edit.html', quote=quote, form=form) # locals?
 
 @quote.route('/<int:qid>/delete', methods=['GET', 'POST'])
 def delete(qid):
