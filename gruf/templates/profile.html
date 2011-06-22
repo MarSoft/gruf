@@ -3,7 +3,7 @@
 {% block title %}Профиль пользователя {{ user.nick }}{% endblock %}
 
 {% block head %}
-<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='profile.css') }}" />
+<link rel='stylesheet' type='text/css' href="{{ url_for('.static', filename='profile.css') }}" />
 {% endblock %}
 
 {% block content %}
