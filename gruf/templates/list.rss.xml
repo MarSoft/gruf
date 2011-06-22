@@ -4,7 +4,7 @@
 		<link>{{ url_for('main.index') }}</link>
 		<description>Цитатки с форума gentoo.ru и из конференции gentoo@conference.gentoo.ru (и не только)</description>
 		<language>ru</language>
-		<atom:link href="http://marsoft.dyndns.info/fortunes-gentoo-ru/rss.php" rel="self" type="application/rss+xml" />
+		<atom:link href="{{ request.base_url }}" rel="self" type="application/rss+xml" />
 		<generator>flask fortunes app</generator>
 {% if newest.approvedate %}
 		<lastBuildDate>{{ newest.approvedate.strftime('%a, %d %b %Y %H:%M:%S %z') }}</lastBuildDate>
