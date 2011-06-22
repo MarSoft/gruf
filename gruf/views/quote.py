@@ -48,6 +48,16 @@ def add():
         return redirect(url_for('quote.index', qid=quote.id))
     return render_template('quote.edit.html', form=form, quote=None)
 
+@quote.route('/<int:qid>/approve', methods=['GET', 'POST'])
+def approve(qid):
+    if not g.user or not g.user.is_approver():
+        abort(403, u'Вы не можете одобрять цитаты')
+    quote = Quote.query.get_or_404(qid)
+    if quote.is_approved():
+        flash(u'Цитата уже одобрена!', 'warning')
+        return redirect(url_for('quote.index', qid=qid))
+    pass
+
 @quote.route('/<int:qid>/edit', methods=['GET', 'POST'])
 def edit(qid):
     if not g.user or not g.user.is_approver(): # только аппрувер может править цитаты
