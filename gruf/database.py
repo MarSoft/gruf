@@ -150,14 +150,16 @@ class Subscription(db.Model):
 class Release(db.Model):
     __tablename__ = 'releases'
     version = db.Column(db.Integer, primary_key = True)
-    count = db.Column(db.Integer)
+    count = db.Column(db.Integer) # число хороших цитат
+    offencount = db.Column(db.Integer) # число offensive-цитат
     birthDate = db.Column(db.DateTime)
     inTree = db.Column(db.Boolean)
     isHidden = db.Column(db.Boolean)
 
-    def __init__(self, version, count, birthDate = None, inTree = False, isHidden = False):
+    def __init__(self, version, count, offencount, birthDate = None, inTree = False, isHidden = False):
         self.version = version
         self.count = count
+        self.offencount = offencount
         if not birthDate:
             birthDate = datetime.now()
         self.birthDate = birthDate
