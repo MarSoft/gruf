@@ -9,6 +9,6 @@ abyss = Module(__name__)
 @abyss.route('/<path:mod>')
 def index(mod=None):
     return display(Quote.query.filter_by(
-        state=Quote.STATE_ABYSS).all(),
+        state=Quote.STATE_ABYSS),
         u'Бездна',
         mod)

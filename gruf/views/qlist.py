@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from flask import Module, render_template, abort
-from sqlalchemy.orm.exc import NoResultFound
+from flask import Module, g, request, render_template, abort
+from sqlalchemy.sql import not_
 from gruf.database import Quote
 
 qlist = Module(__name__)
@@ -8,17 +8,41 @@ qlist = Module(__name__)
 # Получает отфильтрованный список цитат и правильно его отображает
 def display(quotes, title, mod=None):
     """
-    quotes: список объектов-цитат
+    quotes: запрос к таблице цитат
     title: заголовок страницы (т.е. описание того, что это за набор цитат)
     mod: модификатор (rss.xml, subscribe...), отвечающий за способ вывода или действие
     """
+    if request.args.has_key('offensive') and request.args['offensive']:
+        offense = request.args['offensive']
+    else:
+        if g.user and g.user.showOffensiveByDefault:
+            offense = 'yes'
+        else:
+            offense = 'no' # незарегистрированным offensive не показываем
+
+    if offense in ['yes', '1', 1]:
+        offense = 'yes'
+        pass # ничего не фильтруем
+    elif offense in ['no', '0', 0]:
+        offense = 'no'
+        quotes = quotes.filter_by(offensive=Quote.OFF_GOOD)
+    elif offense in ['only', '2', 2]:
+        offense = 'only'
+        quotes = quotes.filter_by(offensive=Quote.OFF_OFFENSIVE)
+    else:
+        abort(404, u'Неправильное значение переменной offensive=%s' % offense)
+        quotes = quotes.filter(not_(Quote.offensive == Quote.OFF_OFFENSIVE))
+
+    # пагинация
+
+    quotes = quotes.all()
     return render_template('list.html', **locals())
 
 @qlist.route('/')
 @qlist.route('/<path:mod>')
 def index(mod=None):
     return display(Quote.query.filter_by(
-        offensive=Quote.OFF_GOOD, state=Quote.STATE_APPROVED).all(),
+        state=Quote.STATE_APPROVED),
         u'Все цитаты',
         mod)
 
@@ -26,7 +50,7 @@ def index(mod=None):
 @qlist.route('/sent-by/<nick>/<path:mod>')
 def sent_by(nick, mod=None):
     return display(Quote.query.filter_by(
-        sender_id=nick, state=Quote.STATE_APPROVED).all(), # добавить rejected?
+        sender_id=nick, state=Quote.STATE_APPROVED), # добавить rejected?
         u'Цитаты, присланные пользователем %s' % nick,
         mod)
 
@@ -34,6 +58,6 @@ def sent_by(nick, mod=None):
 @qlist.route('/approved-by/<nick>/<path:mod>')
 def approved_by(nick, mod=None):
     return display(Quote.query.filter_by(
-        sender_id=nick, state=Quote.STATE_APPROVED).all(),
+        sender_id=nick, state=Quote.STATE_APPROVED),
         u'Цитаты, одобренные пользователем %s' % nick,
         mod)
