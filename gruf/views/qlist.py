@@ -6,7 +6,7 @@ from gruf.database import Quote
 qlist = Module(__name__)
 
 # Получает отфильтрованный список цитат и правильно его отображает
-def display(quotes, title, mod=None, offense=None):
+def display(quotes, title, mod=None, offense=None, abyss=False):
     """
     quotes: запрос к таблице цитат
     title: заголовок страницы (т.е. описание того, что это за набор цитат)
@@ -42,7 +42,7 @@ def index(mod=None):
 
 @qlist.route('/offensive/<offense>/')
 @qlist.route('/offensive/<offense>/<path:mod>')
-def offensivity(offense, mod=None):
+def offensive(offense, mod=None):
     quotes = Quote.query.filter_by(state=Quote.STATE_APPROVED)
     if offense in ['yes', '1', 1]:
         offense = 'yes'

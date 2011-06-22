@@ -6,12 +6,22 @@
 <link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='MODULE.css') }}" />
 {% endblock %}
 
-{% block content %}
-<h1>{{ title }}</h1>
-<p class='nav'>
+{% block nav %}
+{% if not abyss %}
+<a href="{{ url_for('qlist.index') }}">По умолчанию</a>
+<a href="{{ url_for('qlist.offensive', offense='yes') }}">Включая offensive</a>
+<a href="{{ url_for('qlist.offensive', offense='no') }}">Без offensive</a>
+<a href="{{ url_for('qlist.offensive', offense='only') }}">Только offensive</a>
+|
+{% endif %}
 <a href="fortunes">Скачать</a>
 <a href="fortunes.gz">Скачать в gzip</a>
-</p>
+{# подписка? #}
+<a href="rss.xml">RSS</a>
+{% endblock %}
+
+{% block content %}
+<h1>{{ title }}</h1>
 <div id='quotes'>
 {% for quote in quotes %}
 {% include "quote.part.html" %}

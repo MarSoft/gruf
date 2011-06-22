@@ -11,4 +11,4 @@ def index(mod=None):
     return display(Quote.query.filter_by(
         state=Quote.STATE_ABYSS),
         u'Бездна',
-        mod)
+        mod, abyss=True)

@@ -8,18 +8,21 @@
 </head>
 <body>
 	<div id='header'>
-		<a href="{{ url_for('main.index') }}">Главная</a>
-		<a href="{{ url_for('qlist.index') }}">Все цитаты</a>
-		<a href="{{ url_for('abyss.index') }}">Бездна</a>
-		<a href="{{ url_for('users.index') }}">Пользователи</a>
-		<a href="{{ url_for('releases.index') }}">Релизы</a>
-		|
-		{% if g.user %}
-		В системе как <a href="{{ url_for('users.profile', nick=g.user.nick) }}">{{ g.user.nick }}</a>
-		<a href="{{ url_for('login.logout') }}">Выход</a>
-		{% else %}
-		<a href="{{ url_for('login.index') }}">Вход</a>
-		{% endif %}
+		<div id='nav1'>
+			<a href="{{ url_for('main.index') }}">Главная</a>
+			<a href="{{ url_for('qlist.index') }}">Все цитаты</a>
+			<a href="{{ url_for('abyss.index') }}">Бездна</a>
+			<a href="{{ url_for('users.index') }}">Пользователи</a>
+			<a href="{{ url_for('releases.index') }}">Релизы</a>
+			|
+			{% if g.user %}
+			В системе как <a href="{{ url_for('users.profile', nick=g.user.nick) }}">{{ g.user.nick }}</a>
+			<a href="{{ url_for('login.logout') }}">Выход</a>
+			{% else %}
+			<a href="{{ url_for('login.index') }}">Вход</a>
+			{% endif %}
+		</div>
+		<div id='nav2'>{% block nav %}{% endblock %}</div>
 	</div>
 <div id='flash'>
 {% for category, msg in get_flashed_messages(with_categories=True) %}
