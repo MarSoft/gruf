@@ -1,0 +1,32 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Gentoo.ru Fortunes: {{ title }}</title>
+		<link>{{ url_for('main.index') }}</link>
+		<description>Цитатки с форума gentoo.ru и из конференции gentoo@conference.gentoo.ru (и не только)</description>
+		<language>ru</language>
+		<atom:link href="http://marsoft.dyndns.info/fortunes-gentoo-ru/rss.php" rel="self" type="application/rss+xml" />
+		<generator>flask fortunes app</generator>
+{% if newest.approvedate %}
+		<lastBuildDate>{{ newest.approvedate.strftime('%a, %d %b %Y %H:%M:%S %z') }}</lastBuildDate>
+{% else %}
+		<lastBuildDate>{{ newest.senddate.strftime('%a, %d %b %Y %H:%M:%S %z') }}</lastBuildDate>
+{% endif %}
+		<managingEditor>marsoft@ya.ru (Semen Maryasin)</managingEditor>
+		<webMaster>marsoft@ya.ru (Semen Maryasin)</webMaster>
+
+{% for quote in quotes %}
+		<item>
+			<guid>{{ url_for('quote.index', qid=quote.id) }}</guid>
+			<link>{{ url_for('quote.index', qid=quote.id) }}</link>
+			<title>Цитата #{{ quote.id }}</title>
+	{% if quote.approvedate %}
+			<pubDate>{{ quote.approvedate.strftime('%a, %d %b %Y %H:%M:%S %z') }}</pubDate>
+	{% elif quote.senddate %}
+			<pubDate>{{ quote.senddate.strftime('%a, %d %b %Y %H:%M:%S %z') }}</pubDate>
+	{% endif %}
+			<description><![CDATA[<pre>{{ quote.text }}
+		-- {{ quote.author }} ({{ quote.source }})</pre>]]></description>
+		</item>
+{% endfor %}
+	</channel>
+</rss>

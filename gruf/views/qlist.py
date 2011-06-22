@@ -12,12 +12,16 @@ def display(quotes, title, mod=None, offense=None, abyss=False):
     title: заголовок страницы (т.е. описание того, что это за набор цитат)
     mod: модификатор (rss.xml, subscribe...), отвечающий за способ вывода или действие
     offense: статус offensive (для вывода в шаблоне)
+    abyss: находимся ли в бездне (для шаблона)
     """
+    newest = quotes.order_by(Quote.senddate.desc()).first() # FIXME: по какому критерию сортировать?
+
+    quotes = quotes.order_by(Quote.id.desc())
+
     if not mod: # по умолчанию - список в html с пагинацией
-        # пагинация
+        # применяем пагинацию
         return render_template('list.html', **locals())
     elif mod == 'fortunes' or mod == 'fortunes.gz':
-        quotes = quotes.all()
         resp = render_template('fortunes', **locals())
         if mod == 'fortunes.gz': # compressing
             import gzip, cStringIO
@@ -26,9 +30,13 @@ def display(quotes, title, mod=None, offense=None, abyss=False):
             gzfile.write(resp)
             gzfile.close()
             resp = buff.getvalue()
-            return Response(resp, mimetype='application/x-gzip')
+            return Response(resp, mimetype='application/x-gzip') # FIXME: использовать make_response
         else:
             return Response(resp, mimetype='text/plain')
+    elif mod == 'rss.xml':
+        quotes = quotes.limit(30)
+        resp = render_template('list.rss.xml', **locals())
+        return Response(resp, mimetype='text/xml')
     else:
         abort(404)
 
