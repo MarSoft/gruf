@@ -8,6 +8,10 @@
 
 {% block content %}
 <h1>{{ title }}</h1>
+<p class='nav'>
+<a href="fortunes">Скачать</a>
+<a href="fortunes.gz">Скачать в gzip</a>
+</p>
 <div id='quotes'>
 {% for quote in quotes %}
 {% include "quote.part.html" %}
