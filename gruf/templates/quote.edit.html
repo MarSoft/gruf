@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block title %}Правка цитаты #{{ quote.id }}{% endblock %}
+
+{% block head %}
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='quote.css') }}" />
+{% endblock %}
+
+{% block content %}
+<form action="" method="post">
+<table>
+{% macro render_field(field) %}
+	<tr>
+		<td>{{ field.label }}</td>
+		<td>{{ field(**kwargs)|safe }}</td>
+	{% if field.errors %}
+		<td>
+			<ul>
+			{% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
+			</ul>
+		</td>
+	{% endif %}
+	</tr>
+{% endmacro %}
+{% if quote %}{# редактор #}
+	<tr>
+		<td>ID:</td>
+		<td>{{ quote.id }}</td>
+	</tr>
+	{{ render_field(form.state) }}
+{% endif %}
+	{{ render_field(form.text) }}
+	{{ render_field(form.author) }}
+	{{ render_field(form.source) }}
+	{{ render_field(form.prooflink) }}
+{% if quote %}{# редактор #}
+	<tr>
+		<td>Отправитель:</td>
+		<td>{{ quote.sender.nick }}</td>
+	</tr>
+	<tr>
+		<td>Одобрил:</td>
+		<td>{{ quote.approver_id }}</td>
+	</tr>
+{% endif %}
+	{{ render_field(form.offensive) }}
+	<tr>
+		<td></td>
+{% if quote %}{# редактор #}
+		<td><input type='submit' value='Изменить'/></td>
+{% else %}
+		<td><input type='submit' value='Добавить'/></td>
+{% endif %}
+	</tr>
+</table>
+</form>
+{% endblock %}
+
+{# vim: set syntax=htmljinja: #}

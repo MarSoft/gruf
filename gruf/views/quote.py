@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from flask import Module, g, request, render_template, abort
-from gruf.database import Quote
+from flask import Module, g, request, flash, render_template, abort, redirect, url_for
+from gruf.database import Quote, User, MAX_URI, db
+from wtforms import Form, BooleanField, RadioField, TextField, TextAreaField, validators
 
 quote = Module(__name__)
 
@@ -13,13 +14,58 @@ def index(qid):
 def rss(qid):
     pass
 
+class QuoteAddForm(Form):
+    text = TextAreaField(u'Текст')
+    author = TextField(u'Автор', [validators.Length(min=1, max=64)])
+    source = TextField(u'Источник', [validators.Length(min=2, max=64)])
+    prooflink = TextField(u'Пруфлинк', [validators.Length(min=3, max=MAX_URI)])
+    offensive = BooleanField(u'Оффенсивная')
+
+class QuoteEditForm(QuoteAddForm):
+    state = RadioField(u'Статус', choices=[
+        (0, u'Бездна'),
+        (1, u'Одобрено'),
+        (2, u'Свалка (отклонено)'),
+        ], coerce=int)
+    offensive = RadioField(u'Offensive', choices=[
+        (0, u'Неизвестно'),
+        (1, u'Да'),
+        (2, u'Нет'),
+        ], coerce=int)
+
+@quote.route('/add', methods=['GET', 'POST'])
+def add():
+    if g.user and not g.user.can_post():
+        abort(403)
+    form = QuoteAddForm(request.form)
+    if request.method == 'POST' and form.validate():
+        quote = Quote(form.text.data, form.author.data, form.source.data, form.prooflink.data,
+                g.user or User.query.get('anonymous'),
+                offensive=form.offensive.data or None)
+        db.session.add(quote)
+        db.session.commit()
+        flash(u'Цитата добавлена')
+        return redirect(url_for('quote.index', qid=quote.id))
+    return render_template('quote.edit.html', form=form, quote=None)
+
 @quote.route('/<int:qid>/edit/', methods=['GET', 'POST'])
 def edit(qid):
     if not g.user or not g.user.is_approver(): # только аппрувер может править цитаты
         abort(403, u'У Вас недостаточно прав для выполнения этого действия')
     quote = Quote.query.get_or_404(qid)
     if quote.is_approved() and not g.user.is_admin(): # только админ может менять уже зааппрувленные цитаты
-        abort(403)
+        abort(403, u'У Вас недостаточно прав для выполнения этого действия')
 
-    if request.method == 'POST':
-        pass
+    form = QuoteEditForm(request.form, quote)
+    if request.method == 'POST' and form.validate():
+        form.populate_obj(quote)
+        #quote.state = form.state.data
+        #quote.text = form.text.data
+        #quote.author = form.author.data
+        #quote.source = form.source.data
+        #quote.prooflink = form.prooflink.data
+        #quote.offensive = form.offensive.data
+        db.session.commit()
+        flash(u'Цитата отредактирована')
+        return redirect(url_for('quote.index', qid=qid))
+    return render_template('quote.edit.html', quote=quote, form=form) # locals?
