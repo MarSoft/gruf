@@ -12,19 +12,3 @@ def index():
 @releases.route('/create')
 def create():
     abort(501)
-
-@releases.route('/<int:ver>/get/')
-@releases.route('/<int:ver>/get/<f>')
-def get(ver, f=None, offensive=False):
-    r = Release.query.get_or_404(ver)
-    if not f:
-        return redirect(url_for(['get','get_offensive'][offensive],
-            ver=ver, f=r.filename(offensive)), code=301)
-    elif f != r.filename(offensive):
-        abort(404)
-    return redirect(url_for('.static', filename='releases/'+r.filename(offensive)), code=301)
-
-@releases.route('/<int:ver>/get-offensive/')
-@releases.route('/<int:ver>/get-offensive/<f>')
-def get_offensive(ver, f=None):
-    return get(ver, f, offensive)
