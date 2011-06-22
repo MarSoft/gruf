@@ -44,7 +44,7 @@ def add():
                 offensive=[Quote.OFF_UNKNOWN, Quote.OFF_OFFENSIVE][form.offensive.data]) # если вкл, то offensive, иначе неизвестно
         db.session.add(quote)
         db.session.commit()
-        flash(u'Цитата #%d добавлена' % quote.id)
+        flash(u'Цитата #%d добавлена' % quote.id, 'info')
         return redirect(url_for('quote.index', qid=quote.id))
     return render_template('quote.edit.html', form=form, quote=None)
 
@@ -66,7 +66,7 @@ def edit(qid):
         #quote.prooflink = form.prooflink.data
         #quote.offensive = form.offensive.data
         db.session.commit()
-        flash(u'Цитата #%d отредактирована' % qid)
+        flash(u'Цитата #%d отредактирована' % qid, 'info')
         return redirect(url_for('quote.index', qid=qid))
     return render_template('quote.edit.html', quote=quote, form=form) # locals?
 

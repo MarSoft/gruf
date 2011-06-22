@@ -1,0 +1,12 @@
+#flash p .flash-message {
+	background: #cfc;
+}
+#flash p .flash-info {
+	background: #cfc;
+}
+#flash p .flash-warnint {
+	background: #ffc;
+}
+#flash p .flash-error {
+	background: #fcc;
+}
