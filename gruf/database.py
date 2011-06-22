@@ -54,8 +54,11 @@ class Quote(db.Model):
         self.offensive = offensive
         self.state = state
 
+    def is_approved(self):
+        return self.state == self.STATE_APPROVED
+
     def __repr__(self):
-        return '<Quote #%s (rej: %s, sent by %s, approved by %s)>' % (self.id, self.rejected, self.sender_id, self.approver_id)
+        return '<Quote #%s (sent by %s, approved by %s)>' % (self.id, self.sender_id, self.approver_id)
 
 class User(db.Model):
     __tablename__ = 'users'
