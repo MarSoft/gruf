@@ -1,13 +1,13 @@
-#flash p .flash-message {
+#flash p.flash-message {
 	background: #ddf;
 }
-#flash p .flash-info {
+#flash p.flash-info {
 	background: #dfd;
 }
-#flash p .flash-warnint {
+#flash p.flash-warnint {
 	background: #ffd;
 }
-#flash p .flash-error, .error, .errors li {
+#flash p.flash-error, .error, .errors li {
 	background: #fdd;
 }
 form ul {
