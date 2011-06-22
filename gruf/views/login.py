@@ -13,8 +13,7 @@ def index():
     if request.method == 'POST':
         openid = request.form.get('openid')
         if openid:
-            return oid.try_login(openid, ask_for=['nickname',
-                ])#'email', 'fullname', 'nickname'])
+            return oid.try_login(openid, ask_for=['nickname', 'email'])
     return render_template('login.html', next=oid.get_next_url(), error=oid.fetch_error())
     return 'Hello World!'
 
@@ -24,8 +23,11 @@ def do_auth(resp):
     session['openid'] = resp.identity_url
     user = User.query.filter_by(openid=resp.identity_url).first()
     if user is None: # регистрируем
+        if not resp.nickname:
+            return 'Ошибка: не указан ник' # TODO: запросить ник у пользователя. То же для email, если не уникален.
+        # а должен ли email быть уникальным?..
         nick = resp.nickname
-        n=2
+        n=1
         while User.query.filter_by(nick=nick).count() > 0: # обеспечиваем уникальность ника
             nick = '%s_%d' % (resp.nickname, n)
             n += 1
