@@ -104,7 +104,7 @@ def delete(qid):
         if not g.user.is_admin():
             abort(403, u'Только админ может удалить одобренную цитату')
     else:
-        if g.user != quote.sender:
+        if g.user != quote.sender and not g.user.is_admin():
             abort(403, u'Только отправитель цитаты может удалить её из бездны. Аппрувер может отклонить.')
 
     db.session.delete(quote)

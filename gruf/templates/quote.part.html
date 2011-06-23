@@ -13,7 +13,7 @@
 <a href="{{ url_for('quote.edit', qid=quote.id) }}">Правка</a>
 {%   endif %}
 {%   if (quote.is_approved() and g.user.is_admin())
-	or (not quote.is_approved() and g.user == quote.sender) %}
+	or (not quote.is_approved() and (g.user == quote.sender or g.user.is_admin())) %}
 <a href="{{ url_for('quote.delete', qid=quote.id) }}">Удалить</a>
 {%   endif %}
 {% endif %}
