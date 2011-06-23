@@ -144,16 +144,30 @@ class Subscription(db.Model):
     __tablename__ = 'subscriptions'
     id = db.Column(db.Integer, primary_key = True)
     user_id = db.Column(db.String(64), db.ForeignKey('users.nick'))
-    user = db.relationship('User', backref=db.backref('subscriptions', lazy='dynamic'))
-    quote_id = db.Column(db.Integer, db.ForeignKey('quotes.id'))
+    user = db.relationship('User', backref=db.backref('subscriber', lazy='dynamic'),
+            primaryjoin = 'Subscription.user_id == User.nick')
+    material = db.Column(db.SmallInteger)
+    MT_RELEASES = 1
+    MT_COMMENTS = 2
+    MT_ABYSS = 3
+    MT_QUOTES = 4
+    quote_id = db.Column(db.Integer, db.ForeignKey('quotes.id')) # для MT_COMMENTS; если None, то ко всем цитатам
     quote = db.relationship('Quote', backref=db.backref('subscriptions', lazy='dynamic'))
+    offensive = db.Column(db.SmallInteger) # для MT_QUOTES и MT_ABYSS
+    OFF_OFFENSIVE = 1 # только оффенсивные
+    OFF_GOOD = 2 # только "чистые" (для бездны - неизвестные)
+    touser_id = db.Column(db.String(64), db.ForeignKey('users.nick')) # для MT_COMMENTS, MT_ABYSS, MT_QUOTES
+    touser = db.relationship('User', backref=db.backref('subscribed', lazy='dynamic'),
+            primaryjoin = 'Subscription.touser_id == User.nick')
 
-    def __init__(self, user, quote):
+    def __init__(self, user, material, quote=None, offensive=None):
         self.user = user
+        self.material = material
         self.quote = quote
+        self.offensive = offensive
 
     def __repr__(self):
-        return '<Subscription of %s to quote %i>' % (self.openid, self.quote)
+        return '<Subscription of %s to material %i>' % (self.user_id, self.material)
 
 class Release(db.Model):
     __tablename__ = 'releases'
