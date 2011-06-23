@@ -25,12 +25,14 @@
 		</div>
 		<div id='nav2'>{% block nav %}{% endblock %}</div>
 	</div>
+<div id='content'>
 <div id='flash'>
 {% for category, msg in get_flashed_messages(with_categories=True) %}
 <p class='flash-{{ category }}'>{{ msg }}</p>
 {% endfor %}
 </div>
 {% block content %}{% endblock %}
+</div>
 </body>
 </html>
 {# vim: set syntax=htmljinja: #}

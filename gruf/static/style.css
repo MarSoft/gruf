@@ -3,6 +3,24 @@
 	clear: both;
 }
 
+body {
+	margin: 0;
+}
+
+#header {
+}
+
+#nav1 {
+	padding: 5px;
+}
+
+#nav2 {
+	background-color: #ddd;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-top: 1px dotted #abc;
+}
+
 #flash p.flash-message {
 	background: #ddf;
 }
@@ -15,6 +33,15 @@
 #flash p.flash-error, .error, .errors li {
 	background: #fdd;
 }
+
+h1 {
+	margin: 5px;
+}
+
+#content {
+	margin: 5px;
+}
+
 form ul {
 	list-style-image: none;
 	padding: 0;
