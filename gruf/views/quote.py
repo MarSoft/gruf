@@ -90,12 +90,14 @@ def approve(qid, reject=False):
     elif quote.is_rejected() and reject:
         flash(u'Цитата #%d уже отклонена!' % qid, 'warning')
         return redirect(url_for('index', qid=qid))
+    # FIXME: проверить, указан ли offensive
+    # и запросить, если надо
     from datetime import datetime
     quote.approver = g.user
     quote.approvedate = datetime.now()
     quote.state = Quote.STATE_APPROVED
     db.session.commit()
-    flash(u'Цитата #%d %s' % (qid, ('одобрена','отклонена')[reject]), 'info')
+    flash(u'Цитата #%d %s' % (qid, (u'одобрена',u'отклонена')[reject]), 'info')
     return redirect(url_for('index', qid=qid))
 
 @quote.route('/<int:qid>/reject', methods=['GET', 'POST'])
