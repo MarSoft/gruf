@@ -50,7 +50,7 @@ class Quote(db.Model):
         self.sender = sender
         self.approver = approver
         if not senddate:
-            datetime.now()
+            senddate = datetime.now()
         self.senddate = senddate
         self.approvedate = approvedate
         self.offensive = offensive
