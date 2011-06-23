@@ -93,12 +93,16 @@ def approve(qid, reject=False):
     elif quote.is_rejected() and reject:
         flash(u'Цитата #%d уже отклонена!' % qid, 'warning')
         return redirect(url_for('index', qid=qid))
+    if (quote.approver and quote.approver != g.user and
+            quote.is_abyss() and not g.user.is_admin()):
+        flash(u'Вы не можете менять статус чужой цитаты!', 'error')
+        return redirect(url_for('index', qid=qid))
     # FIXME: проверить, указан ли offensive
     # и запросить, если надо
     from datetime import datetime
     quote.approver = g.user
     quote.approvedate = datetime.now()
-    quote.state = Quote.STATE_APPROVED
+    quote.state = (Quote.STATE_APPROVED,Quote.STATE_REJECTED)[reject]
     db.session.commit()
     flash(u'Цитата #%d %s' % (qid, (u'одобрена',u'отклонена')[reject]), 'info')
     return redirect(url_for('index', qid=qid))

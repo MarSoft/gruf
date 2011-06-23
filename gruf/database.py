@@ -56,6 +56,8 @@ class Quote(db.Model):
         self.offensive = offensive
         self.state = state
 
+    def is_abyss(self):
+        return self.state == self.STATE_ABYSS
     def is_approved(self):
         return self.state == self.STATE_APPROVED
     def is_rejected(self):

@@ -85,3 +85,7 @@ div.quote p, div.quote .small {
 div.quote span.right {
 	float: right;
 }
+
+span.disabled {
+	color: #88f;
+}
