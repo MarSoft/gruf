@@ -80,20 +80,27 @@ def edit(qid):
     return render_template('quote.edit.html', quote=quote, form=form) # locals?
 
 @quote.route('/<int:qid>/approve', methods=['GET', 'POST'])
-def approve(qid):
+def approve(qid, reject=False):
     if not g.user or not g.user.is_approver():
-        abort(403, u'Вы не можете одобрять цитаты')
+        abort(403, u'Вы не можете одобрять или отклонять цитаты')
     quote = Quote.query.get_or_404(qid)
-    if quote.is_approved():
+    if quote.is_approved() and not reject:
         flash(u'Цитата #%d уже одобрена!' % qid, 'warning')
-        return redirect(url_for('quote.index', qid=qid))
+        return redirect(url_for('index', qid=qid))
+    elif quote.is_rejected() and reject:
+        flash(u'Цитата #%d уже отклонена!' % qid, 'warning')
+        return redirect(url_for('index', qid=qid))
     from datetime import datetime
     quote.approver = g.user
     quote.approvedate = datetime.now()
     quote.state = Quote.STATE_APPROVED
     db.session.commit()
-    flash(u'Цитата #%d одобрена' % qid, 'info')
-    return redirect(url_for('quote.index', qid=qid))
+    flash(u'Цитата #%d %s' % (qid, ('одобрена','отклонена')[reject]), 'info')
+    return redirect(url_for('index', qid=qid))
+
+@quote.route('/<int:qid>/reject', methods=['GET', 'POST'])
+def reject(qid):
+    return approve(qid, reject=True)
 
 @quote.route('/<int:qid>/delete', methods=['GET', 'POST'])
 def delete(qid):

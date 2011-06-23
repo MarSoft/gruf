@@ -58,6 +58,8 @@ class Quote(db.Model):
 
     def is_approved(self):
         return self.state == self.STATE_APPROVED
+    def is_rejected(self):
+        return self.state == self.STATE_REJECTED
 
     def __repr__(self):
         return '<Quote #%s (sent by %s, approved by %s)>' % (self.id, self.sender_id, self.approver_id)
