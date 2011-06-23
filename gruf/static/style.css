@@ -49,6 +49,9 @@ form ul {
 form ul li {
 	display: block;
 }
+form input[type=text], form select {
+	width: 100%;
+}
 
 div.quote {
 	border: 1px solid #ccc;
