@@ -16,7 +16,7 @@
 {% if quote.approvedate %} в {{ quote.approvedate.strftime('%H:%M %d.%m.%Y') }}{% endif %}
 {% endif %}
 <span class='right'>Пруфлинк: <a href="{{ quote.prooflink }}">{{ quote.prooflink }}</a></span><span class='clear'></span></p>
-{% if g.user and quote.id %}
+{% if g.user and quote.id and not preview %}
 <p class='moderation'>
 {%   if g.user.is_approver() and (not quote.is_approved() and not quote.is_rejected()) %}
 <a href="{{ url_for('quote.approve', qid=quote.id) }}">Одобрить</a>

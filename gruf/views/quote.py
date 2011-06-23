@@ -54,8 +54,6 @@ def add():
             db.session.commit()
             flash(u'Цитата #%d добавлена' % quote.id, 'info')
             return redirect(url_for('quote.index', qid=quote.id))
-        else:
-            preview = quote
     return render_template('quote.edit.html', form=form, preview=quote, quote=None)
 
 @quote.route('/<int:qid>/edit', methods=['GET', 'POST'])
@@ -78,10 +76,11 @@ def edit(qid):
         quote.source = form.source.data
         quote.prooflink = form.prooflink.data
         quote.offensive = form.offensive.data
-        db.session.commit()
-        flash(u'Цитата #%d отредактирована' % qid, 'info')
-        return redirect(url_for('quote.index', qid=qid))
-    return render_template('quote.edit.html', quote=quote, form=form) # locals?
+        if 'checked' in request.form:
+            db.session.commit()
+            flash(u'Цитата #%d отредактирована' % qid, 'info')
+            return redirect(url_for('quote.index', qid=qid))
+    return render_template('quote.edit.html', quote=quote, form=form, preview=quote) # locals?
 
 @quote.route('/<int:qid>/approve', methods=['GET', 'POST'])
 def approve(qid, reject=False):
