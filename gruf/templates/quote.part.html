@@ -5,7 +5,11 @@
 	{% else %}
 	Цитата <i>(новая)</i>
 	{% endif %}
-	<span class='small right'>Оскорбительная: {{ ['неизвестно', 'да', 'нет'][quote.offensive] }}</span>
+	<span class='small right'>
+		{% if quote.is_abyss() %}<span class='abyss' title='Бездна'>?</span>{% endif %}
+		{% if quote.is_approved() %}<span class='approved' title='Одобрено'>V</span>{% endif %}
+		{% if quote.is_rejected() %}<span class='rejected' title='Отклонено'>R</span>{% endif %}
+		Оскорбительная: {{ ['неизвестно', 'да', 'нет'][quote.offensive] }}</span>
 	<span class='clear'></span>
 </h3>
 <pre>{{ quote.text }}

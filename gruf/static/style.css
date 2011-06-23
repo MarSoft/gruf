@@ -85,6 +85,22 @@ div.quote p, div.quote .small {
 div.quote span.right {
 	float: right;
 }
+div.quote span.abyss, div.quote span.approved, div.quote span.rejected {
+	font-weight: bold;
+	padding: 1px;
+}
+div.quote span.abyss {
+	background-color: #008;
+	color: #ccf;
+}
+div.quote span.approved {
+	background-color: green;
+	color: #8f8;
+}
+div.quote span.rejected {
+	background-color: black;
+	color: #f88;
+}
 
 span.disabled {
 	color: #88f;
