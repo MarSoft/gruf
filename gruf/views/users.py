@@ -20,4 +20,4 @@ def profile(nick):
 
 @users.route('/<nick>/edit')
 def edit(nick):
-    pass
+    abort(501)
