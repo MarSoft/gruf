@@ -25,7 +25,6 @@
 <div id='quotes'>
 {% for quote in quotes %}
 {% include "quote.part.html" %}
-{% if not loop.last %}<hr/>{% endif %}
 {% endfor %}
 </div>
 {% endblock %}

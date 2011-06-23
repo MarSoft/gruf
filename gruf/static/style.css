@@ -17,3 +17,34 @@ form ul {
 form ul li {
 	display: block;
 }
+
+div.quote {
+	border: 1px solid #ccc;
+	margin-bottom: 3px;
+}
+div.quote h3, div.quote pre, div.quote p {
+	margin: 0;
+}
+div.quote h3 {
+	background: #ffd;
+	font-size: 10pt;
+	font-weight: normal;
+}
+div.quote h3 a {
+	x-color: black;
+}
+div.quote pre {
+	background: #dfd;;
+}
+div.quote.offensive pre {
+	background: #fdd;
+}
+div.quote p {
+	background: #eef;
+}
+div.quote p, div.quote .small {
+	font-size: 8pt;
+}
+div.quote span.right {
+	float: right;
+}
