@@ -5,15 +5,6 @@ from wtforms import Form, BooleanField, SelectField, RadioField, TextField, Text
 
 quote = Module(__name__)
 
-@quote.route('/<int:qid>/')
-def index(qid):
-    quote = Quote.query.get_or_404(qid)
-    return render_template('quote.html', quote=quote)
-
-@quote.route('/<int:qid>/rss.xml')
-def rss(qid):
-    pass
-
 class QuoteAddForm(Form):
     text = TextAreaField(u'Текст', [validators.Length(min=3)])
     author = TextField(u'Автор', [validators.Length(min=1, max=64), validators.Optional()])
@@ -32,6 +23,17 @@ class QuoteEditForm(QuoteAddForm):
         (1, u'Да'),
         (2, u'Нет'),
         ], coerce=int)
+
+@quote.route('/<int:qid>/')
+def index(qid):
+    quote = Quote.query.get_or_404(qid)
+    if quote.is_rejected() and not (g.user and g.user.is_approver()):
+        abort(403)
+    return render_template('quote.html', quote=quote)
+
+@quote.route('/<int:qid>/rss.xml')
+def rss(qid):
+    pass
 
 @quote.route('/preview', methods=['GET', 'POST'])
 def preview():
