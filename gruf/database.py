@@ -72,6 +72,8 @@ class Quote(db.Model):
 
     def is_fromWeb(self):
         return self.sentFrom == self.SF_WEB
+    def is_fromClient(self):
+        return self.sentFrom == self.SF_CLIENT
 
     def __repr__(self):
         return '<Quote #%s (sent by %s, approved by %s)>' % (self.id, self.sender_id, self.approver_id)
