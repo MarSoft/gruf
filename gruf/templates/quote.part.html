@@ -6,6 +6,9 @@
 	Цитата <i>(новая)</i>
 	{% endif %}
 	<span class='small right'>
+		{% if quote.is_fromWeb() %}<span class='fromWeb' title='Прислано через сайт'>W</span>{% endif %}
+		{% if quote.is_fromClient() %}<span class='fromConsole' title='Прислано через консольный клиент'>C</span>{% endif %}
+
 		{% if quote.is_abyss() %}<span class='abyss' title='Бездна'>?</span>{% endif %}
 		{% if quote.is_approved() %}<span class='approved' title='Одобрено'>V</span>{% endif %}
 		{% if quote.is_rejected() %}<span class='rejected' title='Отклонено'>R</span>{% endif %}
