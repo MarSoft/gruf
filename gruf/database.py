@@ -36,13 +36,16 @@ class Quote(db.Model):
         primaryjoin = 'Quote.approver_id == User.nick')
     senddate = db.Column(db.DateTime)
     approvedate = db.Column(db.DateTime)
-    offensive = db.Column(db.SmallInteger) # 0=Unknown, 1=Offensive, 2=Good
+    offensive = db.Column(db.SmallInteger)
     OFF_UNKNOWN = 0
     OFF_OFFENSIVE = 1
     OFF_GOOD = 2
+    sentFrom = db.Column(db.SmallInteger)
+    SF_WEB = 1
+    SF_CLIENT = 2
 
     def __init__(self, text, author, source, prooflink, sender,
-            senddate = None, approver = None, approvedate = None, offensive = OFF_UNKNOWN, state = STATE_ABYSS):
+            senddate = None, approver = None, approvedate = None, offensive = OFF_UNKNOWN, state = STATE_ABYSS, sentFrom = SF_WEB):
         self.text = text
         self.author = author
         self.source = source
@@ -55,6 +58,7 @@ class Quote(db.Model):
         self.approvedate = approvedate
         self.offensive = offensive
         self.state = state
+        self.sentFrom = sentFrom
 
     def is_abyss(self):
         return self.state == self.STATE_ABYSS
@@ -65,6 +69,9 @@ class Quote(db.Model):
 
     def is_offensive(self):
         return self.offensive == self.OFF_OFFENSIVE
+
+    def is_fromWeb(self):
+        return self.sentFrom == self.SF_WEB
 
     def __repr__(self):
         return '<Quote #%s (sent by %s, approved by %s)>' % (self.id, self.sender_id, self.approver_id)
