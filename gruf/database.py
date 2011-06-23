@@ -68,6 +68,7 @@ class User(db.Model):
     openid = db.Column(db.String(MAX_URI), unique = True) # None, если не зарегистрирован
     email = db.Column(db.String(128))
     registered = db.Column(db.DateTime)
+    lastlogin = db.Column(db.DateTime)
     rights = db.Column(db.SmallInteger)
     RIGHTS_NORMAL = 0
     RIGHTS_APPROVER = 1
@@ -88,6 +89,7 @@ class User(db.Model):
         if not registered:
             registered = datetime.now()
         self.registered = registered
+        self.lastlogin = datetime.now()
         self.rights = rights
         self.canComment = canComment
         self.emailConfirmed = emailConfirmed
@@ -110,6 +112,10 @@ class User(db.Model):
 
     def is_admin(self):
         return self.rights == self.RIGHTS_ADMIN
+
+    def update_lastlogin(self):
+        self.lastlogin = datetime.now()
+        db.session.commit()
 
 class Comment(db.Model):
     __tablename__ = 'comments'

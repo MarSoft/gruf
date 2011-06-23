@@ -25,6 +25,10 @@
 		  <td>{{ user.registered.strftime('%d.%m.%Y %H:%M') }}</td>
 	  </tr>
 	  <tr>
+		  <td>Последний вход:</td>
+		  <td>{{ user.lastlogin.strftime('%d.%m.%Y %H:%M') }}</td>
+	  </tr>
+	  <tr>
 		  <td>Права:</td>
 		  <td>{{ {0:'присылающий', 1:'аппрувер', 2:'релизер', 3:'админ', -1:'баня'}[user.rights] }}</td>
 	  </tr>

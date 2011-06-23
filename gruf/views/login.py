@@ -18,7 +18,6 @@ def index():
         if openid:
             return oid.try_login(openid, ask_for=['nickname', 'email'])
     return render_template('login.html', next=oid.get_next_url(), error=oid.fetch_error())
-    return 'Hello World!'
 
 @oid.after_login
 def do_auth(resp):
@@ -39,6 +38,7 @@ def do_auth(resp):
         db.session.commit()
         flash(u'Пользователь зарегистрирован')
     flash(u'Вход выполнен')
+    user.update_lastlogin()
     g.user = user
     return redirect(oid.get_next_url())
 
