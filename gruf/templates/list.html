@@ -7,7 +7,13 @@
 {% endblock %}
 
 {% block nav %}
-{% if not abyss %}
+{% if abyss %}
+{%   if g.user and g.user.is_approver() %}
+<a href="{{ url_for('abyss.index') }}">Бездна</a>
+<a href="{{ url_for('abyss.trash') }}">Кладбище цитат</a>
+|
+{%   endif %}
+{% else %}
 <a href="{{ url_for('qlist.index') }}">По умолчанию</a>
 <a href="{{ url_for('qlist.offensive', offense='yes') }}">Включая offensive</a>
 <a href="{{ url_for('qlist.offensive', offense='no') }}">Без offensive</a>

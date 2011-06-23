@@ -72,7 +72,7 @@ def offensive(offense, mod=None):
         title,
         mod, offense=offense)
 
-@qlist.route('/sent-by/<nick>')
+@qlist.route('/sent-by/<nick>/')
 @qlist.route('/sent-by/<nick>/<path:mod>')
 def sent_by(nick, mod=None):
     return display(Quote.query.filter_by(
@@ -80,7 +80,7 @@ def sent_by(nick, mod=None):
         u'Цитаты, присланные пользователем %s' % nick,
         mod)
 
-@qlist.route('/approved-by/<nick>')
+@qlist.route('/approved-by/<nick>/')
 @qlist.route('/approved-by/<nick>/<path:mod>')
 def approved_by(nick, mod=None):
     return display(Quote.query.filter_by(
