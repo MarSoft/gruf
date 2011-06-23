@@ -30,4 +30,3 @@ def lookup_current_user():
     if 'openid' in session:
         from gruf.database import User
         g.user = User.query.filter_by(openid=session['openid']).first() # first: если нет, то None
-        g.user.update_lastlogin()
