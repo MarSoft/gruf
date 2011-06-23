@@ -152,6 +152,8 @@ URLs
 /releases/N/filename.gz - скачать релиз (shorthand; возможно, вернуть редирект на сам файл)
 /releases/filename.gz - вариант предыдущего
 /releases/N/edit - изменить релиз
+/releases/rss.xml - rss с информацией о релизах (для подписки на новые)
+?/releases/subscribe - подписка по email на новые релизы (пустой POST?)
 
 Таблицы БД
 ----------
