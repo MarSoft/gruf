@@ -1,0 +1,30 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Gentoo.ru Fortunes: новые релизы</title>
+		<link>{{ url_for('releases.index') }}</link>
+		<description>Новые выпуски цитат с форума gentoo.ru и из конференции gentoo@conference.gentoo.ru (и не только)</description>
+		<language>ru</language>
+		<atom:link href="{{ request.base_url }}" rel="self" type="application/rss+xml" />
+		<generator>flask fortunes app</generator>
+		<lastBuildDate>{{ latest.birthDate.strftime('%a, %d %b %Y %H:%M:%S %z') }}</lastBuildDate>
+		<managingEditor>marsoft@ya.ru (Semen Maryasin)</managingEditor>
+		<webMaster>marsoft@ya.ru (Semen Maryasin)</webMaster>
+
+{% for release in releases %}
+		<item>
+			<guid>{{ url_for('releases.index') }}#v{{ release.version }}</guid>
+			<link>{{ url_for('releases.index') }}#v{{ release.version }}</link>
+			<title>Фортунки v{{ release.version }}</title>
+			<pubDate>{{ release.birthDate.strftime('%a, %d %b %Y %H:%M:%S %z') }}</pubDate>
+			<description><![CDATA[<dl>
+	<dt>Дата выпуска</dt><dd>{{ release.birthDate.strftime('%H:%M %d.%m.%Y') }}</dd>
+	<dt>Число цитат</dt><dd>{{ release.count }}+{{ release.offencount }}</dd>
+	<dt>В дереве?</dt><dd>{{ ('ещё нет','да')[release.inTree] }}</dd>
+	<dt>Скачать</dt><dd>
+<a title='Основной набор цитат' href="{{ url_for('.static', filename='releases/'+release.filename(False)) }}">base</a>
+<a title='Цитаты грубого содержания' href="{{ url_for('.static', filename='releases/'+release.filename(True)) }}">offensive</a></dd>
+	</dl>]]></description>
+		</item>
+{% endfor %}
+	</channel>
+</rss>

@@ -1,18 +1,26 @@
 # -*- coding: utf-8 -*-
-from flask import Module, url_for, flash, render_template, abort, redirect
+from flask import Module, url_for, flash, Response, render_template, abort, redirect
 from gruf.database import Release, Quote, db
 
 releases = Module(__name__)
 
 @releases.route('/')
-def index():
+def index(rss=False):
     releases = Release.query.order_by(Release.version)
     _qq = Quote.query.filter_by(state=Quote.STATE_APPROVED)
     qcount = _qq.filter_by(offensive=Quote.OFF_GOOD).count()
     offencount = _qq.filter_by(offensive=Quote.OFF_OFFENSIVE).count()
     del _qq
     latest = Release.query.order_by(Release.version.desc()).first()
-    return render_template('releases.html', **locals())
+
+    if rss:
+        return Response(render_template('releases.rss.xml', **locals()), mimetype='text/xml')
+    else:
+        return render_template('releases.html', **locals())
+
+@releases.route('/rss.xml')
+def rss():
+    return index(rss=True)
 
 @releases.route('/create')
 def create():
