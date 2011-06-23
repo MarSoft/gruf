@@ -1,14 +1,18 @@
 <div class='quote{% if quote.is_offensive() %} offensive{% endif %}'>
 <h3><a href='{{ url_for('quote.index', qid=quote.id) }}'>Цитата #{{ quote.id }}</a>
-<span class='small right'>Оскорбительная: {{ ['неизвестно', 'да', 'нет'][quote.offensive] }}</span></h3>
+	<span class='small right'>Оскорбительная: {{ ['неизвестно', 'да', 'нет'][quote.offensive] }}</span>
+	<span class='clear'></span>
+</h3>
 <pre>{{ quote.text }}
 		-- {{ quote.author }} ({{ quote.source }})</pre>
-<p>Пруфлинк: <a href="{{ quote.prooflink }}">{{ quote.prooflink }}</a> <span class='right'>Цитату прислал <a href="{{ url_for('users.profile', nick=quote.sender.nick) }}">{{ quote.sender.nick }}</a>
+<p>Цитату прислал <a href="{{ url_for('users.profile', nick=quote.sender.nick) }}">{{ quote.sender.nick }}</a>
 в {{ quote.senddate.strftime('%H:%M %d.%m.%Y') }}{% if quote.approver %},
 одобрил <a href="{{ url_for('users.profile', nick=quote.approver.nick) }}">{{ quote.approver.nick }}</a>
 {% if quote.approvedate %} в {{ quote.approvedate.strftime('%H:%M %d.%m.%Y') }}{% endif %}
-{% endif %}</span></p>
+{% endif %}
+<span class='right'>Пруфлинк: <a href="{{ quote.prooflink }}">{{ quote.prooflink }}</a></span><span class='clear'></span></p>
 {% if g.user %}
+<p class='moderation'>
 {%   if g.user.is_approver() and (not quote.is_approved() and not quote.is_rejected()) %}
 <a href="{{ url_for('quote.approve', qid=quote.id) }}">Одобрить</a>
 <a href="{{ url_for('quote.reject', qid=quote.id) }}">Отклонить</a>
@@ -21,6 +25,7 @@
 	or (not quote.is_approved() and (g.user == quote.sender or g.user.is_admin())) %}
 <a href="{{ url_for('quote.delete', qid=quote.id) }}">Удалить</a>
 {%   endif %}
+</p>
 {% endif %}
 </div>
 {# vim: set ft=htmljinja: #}

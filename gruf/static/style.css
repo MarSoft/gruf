@@ -1,3 +1,8 @@
+.clear {
+	display: block;
+	clear: both;
+}
+
 #flash p.flash-message {
 	background: #ddf;
 }
@@ -20,7 +25,7 @@ form ul li {
 
 div.quote {
 	border: 1px solid #ccc;
-	margin-bottom: 3px;
+	margin-bottom: 5px;
 }
 div.quote h3, div.quote pre, div.quote p {
 	margin: 0;
@@ -30,17 +35,19 @@ div.quote h3 {
 	font-size: 10pt;
 	font-weight: normal;
 }
-div.quote h3 a {
-	x-color: black;
-}
 div.quote pre {
 	background: #dfd;;
 }
 div.quote.offensive pre {
 	background: #fdd;
 }
-div.quote p {
+div.quote {
 	background: #eef;
+}
+div.quote p.moderation {
+	background: #fee;
+	border-top: 1px dotted #faf;
+	font-size: 10pt;
 }
 div.quote p, div.quote .small {
 	font-size: 8pt;
