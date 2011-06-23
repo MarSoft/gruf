@@ -22,16 +22,16 @@ body {
 }
 
 #flash p.flash-message {
-	background: #ddf;
+	background-color: #ddf;
 }
 #flash p.flash-info {
-	background: #dfd;
+	background-color: #dfd;
 }
 #flash p.flash-warnint {
-	background: #ffd;
+	background-color: #ffd;
 }
 #flash p.flash-error, .error, .errors li {
-	background: #fdd;
+	background-color: #fdd;
 }
 
 h1 {
@@ -61,21 +61,21 @@ div.quote h3, div.quote pre, div.quote p {
 	margin: 0;
 }
 div.quote h3 {
-	background: #ffd;
+	background-color: #ffd;
 	font-size: 10pt;
 	font-weight: normal;
 }
 div.quote pre {
-	background: #dfd;;
+	background-color: #dfd;;
 }
 div.quote.offensive pre {
-	background: #fdd;
+	background-color: #fdd;
 }
 div.quote {
-	background: #eef;
+	background-color: #eef;
 }
 div.quote p.moderation {
-	background: #fee;
+	background-color: #fee;
 	border-top: 1px dotted #faf;
 	font-size: 10pt;
 }
