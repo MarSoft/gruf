@@ -101,11 +101,11 @@ def delete(qid):
     if not g.user:
         abort(403)
     if quote.is_approved():
-        if g.user != quote.approver and not g.user.is_admin():
-            abort(403, u'Только админ или аппрувер может удалить одобренную цитату')
+        if not g.user.is_admin():
+            abort(403, u'Только админ может удалить одобренную цитату')
     else:
-        if g.user != quote.sender and not g.user.is_approver():
-            abort(403, u'Только аппрувер или отправитель может удалить цитату из бездны')
+        if g.user != quote.sender:
+            abort(403, u'Только отправитель цитаты может удалить её из бездны. Аппрувер может отклонить.')
 
     db.session.delete(quote)
     db.session.commit()
