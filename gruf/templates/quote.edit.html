@@ -30,10 +30,6 @@
 	</tr>
 {% endmacro %}
 {% if quote %}{# редактор #}
-	<tr>
-		<td>ID</td>
-		<td>{{ quote.id }}</td>
-	</tr>
 {%   if g.user and g.user.is_admin() %}
 	{{ render_field(form.state) }}
 {%   else %}
@@ -49,7 +45,7 @@
 	</tr>
 {%   endif %}
 {% endif %}
-	{{ render_field(form.text) }}
+	{{ render_field(form.text, rows=5, cols=80) }}
 	{{ render_field(form.author) }}
 	{{ render_field(form.source) }}
 	{{ render_field(form.prooflink) }}
