@@ -46,12 +46,13 @@
 {% if quote %}{# редактор #}
 	<tr>
 		<td>Прислал</td>
-		<td>{{ quote.sender.nick }}, {{ quote.senddate.strftime('%H:%M %d.%m.%Y') }}</td>
+		<td>{{ quote.sender.nick }} в {{ quote.senddate.strftime('%H:%M %d.%m.%Y') }}
+			через <i>{{ ('??', 'сайт', 'клиент')[quote.sentFrom] }}</i></td>
 	</tr>
 {%   if quote.approver %}
 	<tr>
 		<td>Одобрил</td>
-		<td>{{ quote.approver_id }}{% if quote.approvedate %},
+		<td>{{ quote.approver_id }}{% if quote.approvedate %} в
 			{{ quote.approvedate.strftime('%H:%M %d.%m.%Y') }}{% endif %}</td>
 	</tr>
 {%   endif %}
