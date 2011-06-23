@@ -65,19 +65,44 @@
 	{{ render_field(form.offensive) }}
 	<tr>
 		<td></td>
-{% if quote %}{# редактор #}
-		<td><input type='submit' value='Изменить'/></td>
-{% else %}
-		<td><input type='submit' value='Добавить'/></td>
-{% endif %}
+		<td><input type='submit' value='Просмотр'/></td>
 	</tr>
 </table>
 </form>
+
 {% if quote and g.user %}
 {% if (quote.is_approved() and (g.user == quote.approver or g.user.is_admin()))
 	or (g.user == quote.sender or g.user.is_approver()) %}
 <a href="{{ url_for('quote.delete', qid=quote.id) }}">Удалить</a>
 {% endif %}
+{% endif %}
+
+{% if preview %}
+<h2>Цитата будет выглядеть так:</h2>
+{% set quote = preview %}
+{% include "quote.part.html" %}
+<noscriptx>
+{% macro render_hidden(field) %}
+<input type="hidden" name="{{ field.name }}" value="{{ field.data }}"/>
+{% endmacro %}
+<form method="post" action="">
+	{{ render_hidden(form.text) }}
+	{{ render_hidden(form.author) }}
+	{{ render_hidden(form.source) }}
+	{{ render_hidden(form.prooflink) }}
+	<input type="hidden" name="checked" value="checked"/>
+{% if form.state %}{# редактор #}
+	{{ render_hidden(form.state) }}
+	{{ render_hidden(form.offensive) }}
+	<input type='submit' value='Изменить'/>
+{% else %}
+	{% if form.offensive.data %}
+	<input type='hidden' name='offensive' value='on'/>
+	{% endif %}
+	<input type='submit' value='Добавить'/>
+{% endif %}
+</form>
+</noscript>
 {% endif %}
 {% endblock %}
 

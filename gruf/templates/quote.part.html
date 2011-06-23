@@ -1,5 +1,10 @@
 <div class='quote{% if quote.is_offensive() %} offensive{% endif %}'>
-<h3><a href='{{ url_for('quote.index', qid=quote.id) }}'>Цитата #{{ quote.id }}</a>
+<h3>
+	{% if quote.id %}
+	<a href='{{ url_for('quote.index', qid=quote.id) }}'>Цитата #{{ quote.id }}</a>
+	{% else %}
+	Цитата <i>(новая)</i>
+	{% endif %}
 	<span class='small right'>Оскорбительная: {{ ['неизвестно', 'да', 'нет'][quote.offensive] }}</span>
 	<span class='clear'></span>
 </h3>
@@ -11,7 +16,7 @@
 {% if quote.approvedate %} в {{ quote.approvedate.strftime('%H:%M %d.%m.%Y') }}{% endif %}
 {% endif %}
 <span class='right'>Пруфлинк: <a href="{{ quote.prooflink }}">{{ quote.prooflink }}</a></span><span class='clear'></span></p>
-{% if g.user %}
+{% if g.user and quote.id %}
 <p class='moderation'>
 {%   if g.user.is_approver() and (not quote.is_approved() and not quote.is_rejected()) %}
 <a href="{{ url_for('quote.approve', qid=quote.id) }}">Одобрить</a>

@@ -44,15 +44,19 @@ def add():
     if g.user and not g.user.can_post():
         abort(403)
     form = QuoteAddForm(request.form)
+    quote = None
     if request.method == 'POST' and form.validate():
         quote = Quote(form.text.data, form.author.data, form.source.data, form.prooflink.data,
                 g.user or User.query.get('anonymous'),
                 offensive=[Quote.OFF_UNKNOWN, Quote.OFF_OFFENSIVE][form.offensive.data]) # если вкл, то offensive, иначе неизвестно
-        db.session.add(quote)
-        db.session.commit()
-        flash(u'Цитата #%d добавлена' % quote.id, 'info')
-        return redirect(url_for('quote.index', qid=quote.id))
-    return render_template('quote.edit.html', form=form, quote=None)
+        if 'checked' in request.form:
+            db.session.add(quote)
+            db.session.commit()
+            flash(u'Цитата #%d добавлена' % quote.id, 'info')
+            return redirect(url_for('quote.index', qid=quote.id))
+        else:
+            preview = quote
+    return render_template('quote.edit.html', form=form, preview=quote, quote=None)
 
 @quote.route('/<int:qid>/edit', methods=['GET', 'POST'])
 def edit(qid):
