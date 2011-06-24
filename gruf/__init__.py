@@ -6,14 +6,15 @@ from flaskext.openid import OpenID
 
 app = Flask(__name__)
 
+import config_default
 try:
     import config
 except ImportError:
-    print 'Warning: no config, using defaults'
-    app.logger.warning('No config, using defaults!')
-    import config_default as config
+    app.logger.warning('No config.py, using defaults or from envvar!')
 
+app.config.from_object(config_default)
 app.config.from_object(config)
+app.config.from_envvar('GRUF_CONFIG')
 oid = OpenID(app)
 
 from gruf.views.main import main
