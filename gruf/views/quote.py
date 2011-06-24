@@ -32,7 +32,7 @@ class QuoteEditForm(QuoteForm):
 def index(qid):
     quote = Quote.query.get_or_404(qid)
     if quote.is_rejected() and not (g.user and g.user.is_approver()):
-        abort(403)
+        abort(410) # для гостей цитата is gone
     return render_template('quote.html', quote=quote)
 
 @quote.route('/<int:qid>/rss.xml')
