@@ -8,6 +8,7 @@
 #
 # Спасибо haku за идею.
 
+# FIXME при переносе исправить!
 SITE='http://marsoft.dyndns.info/gruf/'
 
 preview() {
@@ -30,7 +31,7 @@ preview() {
 		done
 	else
 		echo -n "Отправляем? Если нет, нажмите Ctrl+C в течение 5 секунд"
-		for x in 1 2 3 4 5; do
+		for x in `seq 5`; do
 			sleep 1
 			echo -n ' .'
 		done
@@ -39,7 +40,7 @@ preview() {
 }
 send() {
 	echo "Отправляю цитату..."
-	if qid=$(curl \
+	reply=$(curl \
 		--data-urlencode "text@/tmp/cgr-quote.tmp" \
 		--data-urlencode "author=$author" \
 		--data-urlencode "source=$source" \
@@ -49,13 +50,19 @@ send() {
 		--data-urlencode "client=2" \
 		--data-urlencode "$offensive" \
 		--data-urlencode "checked=on" \
-		${SITE}quote/add |
-		grep 'Quote [0-9]* appended' | grep -o '[0-9]')
+		${SITE}quote/add | tail -1)
+	echo
+	if qid=$(echo "$reply" | grep 'Quote [0-9]* appended' | grep -o '[0-9]')
 	then
 		echo "Цитата отправлена успешно!"
 		echo "${SITE}quote/$qid"
 	else
 		echo "Не удалось отправить цитату."
+		if [[ "$reply" == "Illegal username" ]]; then
+			echo "Неверное имя пользователя. Сначала надо войти хоть раз через веб-интерфейс!"
+		else
+			echo "$reply"
+		fi
 	fi
 	rm /tmp/cgr-quote.tmp
 }
@@ -64,7 +71,9 @@ usage() {
 	Использование:
 	 echo цитата | $0 опции
 	Опции:
-	 -d, --sender: имя отправителя. По умолчанию - текущий логин ($LOGNAME)
+	 -d, --sender: имя отправителя. По умолчанию - текущий логин ($LOGNAME).
+	 	Должно совпадать с именем пользователя, зарегистрированного в цитатнике. С учётом регистра.
+		Также можно задать через переменную окружения GRUF_USER.
 	 -a, --author: автор цитаты. Можно не указывать.
 	 -c, --source: источник цитаты. Обязательный параметр. Примеры возможных значений:
 	 	gentoo.ru
@@ -89,13 +98,14 @@ eval set -- "$OPTS"
 
 [ "$1" == "--" ] && usage
 
+sender="${GRUF_USER}"
 while :; do
 	case "$1" in
 		-d|--sender)	sender="$2"; shift 2;;
 		-a|--author)	author="$2"; shift 2;;
 		-c|--source)	source="$2"; shift 2;;
 		-p|--prooflink)	prooflink="$2"; shift 2;;
-		-o|--offensive)	offensive="offensive=on";;
+		-o|--offensive)	offensive="offensive=on"; shift;;
 		-h|--help)	usage;;
 		--)		shift; break;;
 		*)	echo "Неизвестный аргумент: $1"; exit 1;;
