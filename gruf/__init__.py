@@ -14,7 +14,7 @@ except ImportError:
 
 app.config.from_object(config_default)
 app.config.from_object(config)
-app.config.from_envvar('GRUF_CONFIG')
+app.config.from_envvar('GRUF_CONFIG', silent=True)
 oid = OpenID(app)
 
 from gruf.views.main import main
