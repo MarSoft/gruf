@@ -6,10 +6,10 @@ from wtforms import Form, BooleanField, HiddenField, SelectField, RadioField, Te
 quote = Module(__name__)
 
 class QuoteForm(Form):
-    text = TextAreaField(u'Текст', [validators.Length(min=3)])
+    text = TextAreaField(u'Текст', [validators.Length(min=3), validators.Required()])
     author = TextField(u'Автор', [validators.Length(min=1, max=64), validators.Optional()])
-    source = TextField(u'Источник', [validators.Length(min=2, max=64)])
-    prooflink = TextField(u'Пруфлинк', [validators.Length(max=MAX_URI), validators.URL(message=u'Это не похоже на URL!')])
+    source = TextField(u'Источник', [validators.Length(min=2, max=64), validators.Required()])
+    prooflink = TextField(u'Пруфлинк', [validators.Length(max=MAX_URI), validators.URL(message=u'Это не похоже на URL!'), validators.Required()])
 
 class QuoteAddForm(QuoteForm):
     offensive = BooleanField(u'Грубая цитата')
