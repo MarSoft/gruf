@@ -99,6 +99,13 @@
 </form>
 </noscript>
 {% endif %}
+
+{% if not quote and not preview %}
+<p>
+Цитаты также можно присылать из командной строки.
+Для этого нужно скачать <a href="{{ url_for('.static', filename='grufpaste.sh') }}">клиент</a>.
+</p>
+{% endif %}
 {% endblock %}
 
-{# vim: set syntax=htmljinja: #}
+{# vim: set ft=htmljinja: #}
