@@ -3,10 +3,17 @@
 from flask import Flask
 from flask import g, session
 from flaskext.openid import OpenID
-import config
 
 app = Flask(__name__)
-app.secret_key = config.SECRET_KEY
+
+try:
+    import config
+except ImportError:
+    print 'Warning: no config, using defaults'
+    app.logger.warning('No config, using defaults!')
+    import config_default as config
+
+app.config.from_object(config)
 oid = OpenID(app)
 
 from gruf.views.main import main

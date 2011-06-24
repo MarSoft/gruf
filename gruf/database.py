@@ -4,17 +4,7 @@ from gruf import app
 from datetime import datetime
 
 MAX_URI = 256
-# defaults
-SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/grufortunes.db'
 
-# loading from settings
-try:
-    from config import SQLALCHEMY_DATABASE_URI
-except ImportError:
-    print 'Warning: no config'
-    app.logger.warning('No settings, will use default DB path!')
-
-app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
 db = SQLAlchemy(app)
 
 class Quote(db.Model):
