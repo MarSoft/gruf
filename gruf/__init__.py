@@ -32,6 +32,14 @@ app.register_module(quote, url_prefix='/quote')
 app.register_module(users, url_prefix='/users')
 app.register_module(releases, url_prefix='/releases')
 
+if not app.debug:
+    import logging
+    from gruf.logmail import PipeMailHandler
+    from gruf.database import User
+    mail_handler = PipeMailHandler(User.admin_mails(), 'GRuF: Error')
+    mail_handler.setLevel(logging.ERROR)
+    app.logger.addHandler(mail_handler)
+
 @app.before_request
 def lookup_current_user():
     g.user = None
