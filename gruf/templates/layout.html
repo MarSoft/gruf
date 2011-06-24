@@ -20,7 +20,7 @@
 			В системе как <a href="{{ url_for('users.profile', nick=g.user.nick) }}">{{ g.user.nick }}</a>
 			<a href="{{ url_for('login.logout') }}">Выход</a>
 			{% else %}
-			<a href="{{ url_for('login.index') }}?next={{ request.base_url }}">Вход</a>
+			<a href="{{ url_for('login.index') }}?next={{ request.url }}">Вход</a>
 			{% endif %}
 		</div>
 		<div id='nav2'>{% block nav %}{% endblock %}</div>

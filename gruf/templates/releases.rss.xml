@@ -4,7 +4,7 @@
 		<link>{{ url_for('releases.index') }}</link>
 		<description>Новые выпуски цитат с форума gentoo.ru и из конференции gentoo@conference.gentoo.ru (и не только)</description>
 		<language>ru</language>
-		<atom:link href="{{ request.base_url }}" rel="self" type="application/rss+xml" />
+		<atom:link href="{{ request.url }}" rel="self" type="application/rss+xml" />
 		<generator>flask fortunes app</generator>
 		<lastBuildDate>{{ latest.birthDate.strftime('%a, %d %b %Y %H:%M:%S %z') }}</lastBuildDate>
 		<managingEditor>marsoft@ya.ru (Semen Maryasin)</managingEditor>
