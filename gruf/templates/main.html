@@ -15,11 +15,13 @@
 <p>На данный момент у нас есть:</p>
 <ul>
 	<li>Цитат: {{ quotes.count() }}
-	(из них в <a href="{{ url_for('abyss.index') }}">бездне</a>: {{ quotes.filter_by(state=0).count() }},
-	<a href="{{ url_for('qlist.index') }}">одобрено</a>: {{ quotes.filter_by(state=1).count() }}{% if g.user and g.user.is_approver() %},
-	<a href="{{ url_for('qlist.index') }}">отклонено</a>: {{ quotes.filter_by(state=2).count() }}
-{% endif %}
-	)</li>
+	(из них в
+	<a href="{{ url_for('abyss.index') }}">бездне</a>: {{ quotes.filter_by(state=0).count() }},
+	<a href="{{ url_for('qlist.index') }}">одобрено</a>: {{ quotes.filter_by(state=1).count() }},
+{% if g.user and g.user.is_approver() %}
+	<a href="{{ url_for('qlist.index') }}">отклонено</a>: {{ quotes.filter_by(state=2).count() }}{% else %}
+	отклонено: {{ quotes.filter_by(state=2).count() }}{% endif %})
+	</li>
 	<li><a href="{{ url_for('users.index') }}">Пользователей</a>: {{ users.count() }}</li>
 	<li>Комментариев: {{ comments.count() }}</li>
 	<li><a href="{{ url_for('releases.index') }}">Релизов</a>: {{ releases.count() }}</li>
