@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Module, g, request, flash, render_template, abort, redirect, url_for
 from gruf.database import Quote, User, MAX_URI, db
-from sqlalchemy.orm.exc import NoResultFound
 from wtforms import Form, BooleanField, HiddenField, SelectField, RadioField, TextField, TextAreaField, validators
 
 quote = Module(__name__)
@@ -55,9 +54,8 @@ def add():
     if request.method == 'POST' and form.validate():
         if form.client.data != Quote.SF_WEB:
             sender = form.sender.data
-            try:
-                user = User.query.get(sender)
-            except NoResultFound:
+            user = User.query.get(sender)
+            if not user: # не найден
                 abort(403, u'Illegal username')
         else:
             user = g.user or User.query.get('anonymous')
