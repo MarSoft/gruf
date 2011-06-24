@@ -1,18 +1,23 @@
 # -*- coding: utf-8 -*-
 from flask import Module, g, request, flash, render_template, abort, redirect, url_for
 from gruf.database import Quote, User, MAX_URI, db
-from wtforms import Form, BooleanField, SelectField, RadioField, TextField, TextAreaField, validators
+from sqlalchemy.orm.exc import NoResultFound
+from wtforms import Form, BooleanField, HiddenField, SelectField, RadioField, TextField, TextAreaField, validators
 
 quote = Module(__name__)
 
-class QuoteAddForm(Form):
+class QuoteForm(Form):
     text = TextAreaField(u'Текст', [validators.Length(min=3)])
     author = TextField(u'Автор', [validators.Length(min=1, max=64), validators.Optional()])
     source = TextField(u'Источник', [validators.Length(min=2, max=64)])
     prooflink = TextField(u'Пруфлинк', [validators.Length(max=MAX_URI), validators.URL(message=u'Это не похоже на URL!')])
-    offensive = BooleanField(u'Грубая цитата')
 
-class QuoteEditForm(QuoteAddForm):
+class QuoteAddForm(QuoteForm):
+    offensive = BooleanField(u'Грубая цитата')
+    sender = HiddenField(u'Отправитель', [validators.Length(max=64)]) # ник отправителя, для парсинга запроса bash-клиента
+    client = HiddenField(u'Клиент', [validators.NumberRange(min=1, max=2)], filters=([int]), default=Quote.SF_WEB) # FIXME: number range
+
+class QuoteEditForm(QuoteForm):
     state = SelectField(u'Статус', choices=[
         (0, u'Бездна'),
         (1, u'Одобрено'),
@@ -48,14 +53,27 @@ def add():
     form = QuoteAddForm(request.form)
     quote = None
     if request.method == 'POST' and form.validate():
-        quote = Quote(form.text.data, form.author.data, form.source.data, form.prooflink.data,
-                g.user or User.query.get('anonymous'),
-                offensive=[Quote.OFF_UNKNOWN, Quote.OFF_OFFENSIVE][form.offensive.data]) # если вкл, то offensive, иначе неизвестно
+        if form.client.data != Quote.SF_WEB:
+            sender = form.sender.data
+            try:
+                user = User.query.get(sender)
+            except NoResultFound:
+                abort(403, u'Illegal username')
+        else:
+            user = g.user or User.query.get('anonymous')
+        quote = Quote(form.text.data, form.author.data, form.source.data, form.prooflink.data, user,
+                offensive=(Quote.OFF_UNKNOWN, Quote.OFF_OFFENSIVE)[form.offensive.data], # если вкл, то offensive, иначе неизвестно
+                sentFrom = form.client.data)
         if 'checked' in request.form:
             db.session.add(quote)
             db.session.commit()
-            flash(u'Цитата #%d добавлена' % quote.id, 'info')
-            return redirect(url_for('quote.index', qid=quote.id))
+            if form.client.data == Quote.SF_WEB:
+                flash(u'Цитата #%d добавлена' % quote.id, 'info')
+                return redirect(url_for('quote.index', qid=quote.id))
+            else:
+                return 'Quote %d appended' % quote.id
+    if form.client.data != Quote.SF_WEB: # FIXME: client.data может быть битым
+        abort(500, u'Bad data.\n'+'\n'.join([e+':'+','.join(form.errors[e]) for e in form.errors]))
     return render_template('quote.edit.html', form=form, preview=quote, quote=None)
 
 @quote.route('/<int:qid>/edit', methods=['GET', 'POST'])
