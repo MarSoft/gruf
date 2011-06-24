@@ -123,6 +123,15 @@ class User(db.Model):
         self.lastlogin = datetime.now()
         db.session.commit()
 
+    @staticmethod()
+    def admin_mails():
+        """
+        Возвращает все непустые email админов (без дубликатов)
+        """
+        return db.session.query(User.email).filter(
+                db.and_(User.rights == User.RIGHTS_ADMIN,
+                    User.email != None)).distinct().all()
+
 class Comment(db.Model):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key = True)
