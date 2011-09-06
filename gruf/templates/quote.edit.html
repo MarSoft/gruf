@@ -56,6 +56,8 @@
 			{{ quote.approvedate.strftime('%H:%M %d.%m.%Y') }}{% endif %}</td>
 	</tr>
 {%   endif %}
+{% else %}{# новая цитата → указываем, откуда добавлена #}
+	<input type='hidden' name='client' value='1'/>
 {% endif %}
 	{{ render_field(form.offensive) }}
 	<tr>
