@@ -87,6 +87,7 @@
 	{{ render_hidden(form.author) }}
 	{{ render_hidden(form.source) }}
 	{{ render_hidden(form.prooflink) }}
+	<input type="hidden" name="client" value="1"/>
 	<input type="hidden" name="checked" value="checked"/>
 {% if form.state %}{# редактор #}
 	{{ render_hidden(form.state) }}
