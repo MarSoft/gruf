@@ -12,7 +12,10 @@ def index():
         return redirect(oid.get_next_url(), 303)
     if request.method == 'POST':
         if request.form.get('gentoo'):
-            openid = 'http://www.gentoo.ru/users/%s/identity' % request.form.get('login')
+            nick = request.form.get('login')
+            # TODO: возможно, проверить ник на валидность набора символов
+            session['nick'] = nick
+            openid = 'http://www.gentoo.ru/users/%s/identity' % nick
         else:
             openid = request.form.get('openid')
         if openid:
@@ -25,10 +28,10 @@ def do_auth(resp):
     session['openid'] = resp.identity_url
     user = User.query.filter_by(openid=resp.identity_url).first()
     if user is None: # регистрируем
-        if not resp.nickname:
+        if not resp.nickname and not 'nick' in session:
             return 'Ошибка: не указан ник' # TODO: запросить ник у пользователя. То же для email, если не уникален.
-        # а должен ли email быть уникальным?..
-        nick = resp.nickname
+        # а должен ли email быть уникальным?
+        nick = resp.nickname or session['nick']
         n=1
         while User.query.filter_by(nick=nick).count() > 0: # обеспечиваем уникальность ника
             nick = '%s_%d' % (resp.nickname, n)
@@ -44,7 +47,8 @@ def do_auth(resp):
 
 @login.route('/logout')
 def logout():
-    session.pop('openid', None)
+    session.pop('openid', None) # None - чтобы не было KeyError при отсутствующем ключе
+    session.pop('nick', None)
     flash(u'Вы вышли из системы')
     return redirect(oid.get_next_url(), 303)
 
