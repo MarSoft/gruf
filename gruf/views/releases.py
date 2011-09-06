@@ -35,7 +35,7 @@ def bumped(ver):
         r.inTree = True
         db.session.commit()
         flash(u'Версия #%d помечена как имеющаяся в дереве. Спасибо за бамп!' % ver, 'info')
-    return redirect(url_for('index'))
+    return redirect(url_for('index'), 303)
 
 @releases.route('/<int:ver>/unbump')
 def unbump(ver):
@@ -46,4 +46,4 @@ def unbump(ver):
         r.inTree = False
         db.session.commit()
         flash(u'Версия #%d помечена как отсутствующая в дереве.' % ver, 'info')
-    return redirect(url_for('index'))
+    return redirect(url_for('index'), 303)

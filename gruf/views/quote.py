@@ -67,7 +67,7 @@ def add():
             db.session.commit()
             if form.client.data == Quote.SF_WEB:
                 flash(u'Цитата #%d добавлена' % quote.id, 'info')
-                return redirect(url_for('quote.index', qid=quote.id))
+                return redirect(url_for('quote.index', qid=quote.id), 201) # 201 Accepted
             else:
                 return 'Quote %d appended' % quote.id
     if form.client.data != Quote.SF_WEB: # FIXME: client.data может быть битым
@@ -97,7 +97,7 @@ def edit(qid):
         if 'checked' in request.form:
             db.session.commit()
             flash(u'Цитата #%d отредактирована' % qid, 'info')
-            return redirect(url_for('quote.index', qid=qid))
+            return redirect(url_for('quote.index', qid=qid), 303)
     return render_template('quote.edit.html', quote=quote, form=form, preview=quote) # locals?
 
 @quote.route('/<int:qid>/approve', methods=['GET', 'POST'])
@@ -107,23 +107,21 @@ def approve(qid, reject=False):
     quote = Quote.query.get_or_404(qid)
     if quote.is_approved() and not reject:
         flash(u'Цитата #%d уже одобрена!' % qid, 'warning')
-        return redirect(url_for('index', qid=qid))
     elif quote.is_rejected() and reject:
         flash(u'Цитата #%d уже отклонена!' % qid, 'warning')
-        return redirect(url_for('index', qid=qid))
-    if (quote.approver and quote.approver != g.user and
+    elif (quote.approver and quote.approver != g.user and
             quote.is_abyss() and not g.user.is_admin()):
         flash(u'Вы не можете менять статус чужой цитаты!', 'error')
-        return redirect(url_for('index', qid=qid))
-    # FIXME: проверить, указан ли offensive
-    # и запросить, если надо
-    from datetime import datetime
-    quote.approver = g.user
-    quote.approvedate = datetime.now()
-    quote.state = (Quote.STATE_APPROVED,Quote.STATE_REJECTED)[reject]
-    db.session.commit()
-    flash(u'Цитата #%d %s' % (qid, (u'одобрена',u'отклонена')[reject]), 'info')
-    return redirect(url_for('index', qid=qid))
+    else:
+        # FIXME: проверить, указан ли offensive
+        # и запросить, если надо
+        from datetime import datetime
+        quote.approver = g.user
+        quote.approvedate = datetime.now()
+        quote.state = (Quote.STATE_APPROVED,Quote.STATE_REJECTED)[reject]
+        db.session.commit()
+        flash(u'Цитата #%d %s' % (qid, (u'одобрена',u'отклонена')[reject]), 'info')
+    return redirect(url_for('index', qid=qid), 303)
 
 @quote.route('/<int:qid>/reject', methods=['GET', 'POST'])
 def reject(qid):
@@ -145,6 +143,6 @@ def delete(qid):
     db.session.commit()
     flash(u'Цитата #%d удалена' % qid)
     if quote.is_approved():
-        return redirect(url_for('qlist.index'))
+        return redirect(url_for('qlist.index'), 303)
     else:
-        return redirect(url_for('abyss.index'))
+        return redirect(url_for('abyss.index'), 303)

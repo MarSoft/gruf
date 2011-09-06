@@ -9,7 +9,7 @@ login = Module(__name__)
 @oid.loginhandler
 def index():
     if g.user is not None:
-        return redirect(oid.get_next_url())
+        return redirect(oid.get_next_url(), 303)
     if request.method == 'POST':
         if request.form.get('gentoo'):
             openid = 'http://www.gentoo.ru/users/%s/identity' % request.form.get('login')
@@ -40,10 +40,11 @@ def do_auth(resp):
     flash(u'Вход выполнен')
     user.update_lastlogin()
     g.user = user
-    return redirect(oid.get_next_url())
+    return redirect(oid.get_next_url(), 303)
 
 @login.route('/logout')
 def logout():
     session.pop('openid', None)
     flash(u'Вы вышли из системы')
-    return redirect(oid.get_next_url())
+    return redirect(oid.get_next_url(), 303)
+
