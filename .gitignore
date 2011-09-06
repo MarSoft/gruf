@@ -2,3 +2,4 @@
 .*.swp
 gruf/db/*
 gruf/config.py
+static
