@@ -21,6 +21,7 @@
 <p>Это может быть выполнено автоматически ebuild-ом, который скоро появится в оверлее <a href="http://code.google.com/p/rion-overlay/">rion</a>.</p>
 </div>
 <h3>Статистика по цитатам</h3>
+{% if latest %}
 <table>
 	<tr><td>В последнем релизе:</td><td>{{ latest.count }}+{{ latest.offencount }}
 			(скачать: <a href="{{ url_for('qlist.offensive', offense='no', mod='fortunes.gz') }}">base</a>,
@@ -28,6 +29,9 @@
 	<tr><td>Всего в базе данных:</td><td> {{ qcount }}+{{ offencount }}</td></tr>
 	<tr><td>Не вошло в релизы:</td><td> {{ qcount-latest.count }}+{{ offencount-latest.offencount }}={{ qcount+offencount-latest.count-latest.offencount }}</tr></td>
 </table>
+{% else %}
+<p class="error">Ошибка: нет ни одного релиза, невозможно подсчитать статистику!</p>
+{% endif %}
 {% if g.user and g.user.is_releaser() %}
 <a href="{{ url_for('create') }}">Создать релиз</a>
 {% endif %}
