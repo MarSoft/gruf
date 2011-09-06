@@ -67,7 +67,7 @@ def add():
             db.session.commit()
             if form.client.data == Quote.SF_WEB:
                 flash(u'Цитата #%d добавлена' % quote.id, 'info')
-                return redirect(url_for('quote.index', qid=quote.id), 201) # 201 Accepted
+                return redirect(url_for('quote.index', qid=quote.id), 303)
             else:
                 return 'Quote %d appended' % quote.id
     if form.client.data != Quote.SF_WEB: # FIXME: client.data может быть битым
